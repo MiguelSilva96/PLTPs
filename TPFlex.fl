@@ -1,0 +1,26 @@
+%option noyywrap
+
+%%
+@string.*   { printf("%s", yytext); }
+\{?\\'a\}?  { printf("á"); }
+\{?\\'A\}?  { printf("Á"); }
+\{?\\'e\}?  { printf("é"); }
+\{?\\'i\}?  { printf("í"); }
+\{?\\'o\}?  { printf("ó"); }
+\{?\\'u\}?  { printf("ú"); }
+\{?\\~a\}?  { printf("ã"); }
+\{\c\{c\}\} { printf("ç"); }
+
+[\ ]*[=][\ ]*       { printf(" = ");  }
+\"[,\n\r]           { printf("},");   }
+[\ ]*[=][\ ]*[\"\{] { printf(" = {"); }
+
+%%
+
+int main (int argc, char* argv[]) {
+    FILE *input;
+    input = fopen(argv[1],"r");
+    yyin = input;
+    yylex();
+    return 0;
+}
