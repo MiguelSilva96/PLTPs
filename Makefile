@@ -1,5 +1,5 @@
 V=TPFlex
 
-tpflex: $V.fl
+$V: $V.fl
 	flex $V.fl
 	gcc lex.yy.c -o $V

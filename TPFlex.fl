@@ -1,21 +1,74 @@
 %option noyywrap
 
-%%
-@string.*   { printf("%s", yytext); }
-\{?\\'a\}?  { printf("á"); }
-\{?\\'A\}?  { printf("Á"); }
-\{?\\'e\}?  { printf("é"); }
-\{?\\'i\}?  { printf("í"); }
-\{?\\'o\}?  { printf("ó"); }
-\{?\\'u\}?  { printf("ú"); }
-\{?\\~a\}?  { printf("ã"); }
-\{\c\{c\}\} { printf("ç"); }
-
-[\ ]*[=][\ ]*       { printf(" = ");  }
-\"[,\n\r]           { printf("},");   }
-[\ ]*[=][\ ]*[\"\{] { printf(" = {"); }
+L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
+T       (author|editor)
 
 %%
+  int i = 0, j = 0, x;
+  char **nomesProprios = malloc(sizeof(char*)*20);
+  char *token;
+  for(x = 0; x < 20; x++) {
+    nomesProprios[x] = malloc(sizeof(char)*64);
+  }
+  char apelido[64];
+  FILE *output = fopen("teste1.txt", "w");
+
+@string.*   { fprintf(output, "%s", yytext); }
+
+
+\{?\\'a\}?  { fprintf(output, "á"); }
+\{?\\'A\}?  { fprintf(output, "Á"); }
+\{?\\'e\}?  { fprintf(output, "é"); }
+\{?\\'i\}?  { fprintf(output, "í"); }
+\{?\\'o\}?  { fprintf(output, "ó"); }
+\{?\\'u\}?  { fprintf(output, "ú"); }
+\{?\\~a\}?  { fprintf(output, "ã"); }
+\{?\c\{c\}\}? { fprintf(output, "ç"); }
+
+{T}/[\ ]*[=][\ ]*["{] { 
+	fprintf(output, "%s = {", yytext); 
+}
+
+[\}\"][\,] { fprintf(output, "},\n"); }
+
+
+[A-Z]{L}+/([\ ]and|[\}\"]) {
+	sprintf(apelido,"%s, ", yytext);
+
+	for(j = 0; j < i; j++)
+		strcat(apelido, nomesProprios[j]);
+	
+	i = 0;
+	fprintf(output, "%s", apelido);
+}
+
+
+[A-Z]/{L}+[\ ][A-Z] { 
+	sprintf(nomesProprios[i], "%s. ", yytext);
+	i++;
+}
+
+[\ ]and[\ ]   { fprintf(output, "%s", yytext); }
+[A-Z]{L}+[\,] { fprintf(output, "%s ", yytext); }
+
+([\ ]*[A-Z]{L}+)+[\,][\ ][A-Z]{L}+[\ ]?[A-Z]{L}* {
+	token = strtok(yytext, " ");
+	x = 0;
+    while(token != NULL) {
+      	if(x != 0)
+      		fprintf(output, "%c. ", token[0]);
+      	else
+      		fprintf(output, "%s ", token);
+      	token = strtok(NULL, " ");
+      	x++;
+   }
+}
+
+[A-Z][\.] { fprintf(output, "%s ", yytext); }
+
+
+%%
+
 
 int main (int argc, char* argv[]) {
     FILE *input;
