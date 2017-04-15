@@ -26,31 +26,30 @@ T       (author|editor)
 \{?\\~a\}?    { fprintf(output, "ã"); }
 \{?\c\{c\}\}? { fprintf(output, "ç"); }
 
-{T}/[\ ]*[=][\ ]*["{] { 
-	fprintf(output, "%s = {", yytext); 
+{T}/[\ ]*[=][\ ]*["{] {
+	fprintf(output, "%s = {", yytext);
 }
 
 
 [\}\"][\,\n] { fprintf(output, "},\n"); }
 
 
-{LM}{L}+/([\ ]and|[\}\"]) {
+{LM}{L}+/([\,]|([\ ]and|[\}\"])) {
 	sprintf(apelido,"%s, ", yytext);
 
 	for(j = 0; j < i; j++)
 		strcat(apelido, nomesProprios[j]);
-	
+
 	i = 0;
 	fprintf(output, "%s", apelido);
 }
 
-[A-ZÁÉÍÓÚ]/{L}+([A-Z]{L})?[\ ][A-Z]{L}+[\ ](and|[}\"]) {
-	sprintf(nomesProprios[i], "%s. ", yytext);
+[A-ZÁÉÍÓÚ]/[\.]|({L}+([A-Z]{L})?[\ ][A-Z]{L}+[\ ](and|[\}\"])) {
+	sprintf(nomesProprios[i], "%s.", yytext);
 	i++;
 }
 
 [\ ]and[\ ]   { fprintf(output, "%s", yytext); }
-{LM}{L}+[\,] { fprintf(output, "%s ", yytext); }
 
 ({LM}{L}+)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
 	token = strtok(yytext, " ,");
@@ -59,7 +58,7 @@ T       (author|editor)
       	if(x != 0) {
       		if(!strcmp("", token));
       		else
-      			fprintf(output, "%c. ", token[0]);
+      			fprintf(output, "%c.", token[0]);
       	}
       	else
       		fprintf(output, "%s, ", token);
@@ -67,8 +66,6 @@ T       (author|editor)
       	x++;
    }
 }
-
-{LM}[\.] { fprintf(output, "%s ", yytext); }
 
 
 %%
