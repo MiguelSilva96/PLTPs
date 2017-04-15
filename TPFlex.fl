@@ -1,6 +1,7 @@
 %option noyywrap
 
-L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
+L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í|\.
+LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
 T       (author|editor)
 
 %%
@@ -16,23 +17,24 @@ T       (author|editor)
 @string.*   { fprintf(output, "%s", yytext); }
 
 
-\{?\\'a\}?  { fprintf(output, "á"); }
-\{?\\'A\}?  { fprintf(output, "Á"); }
-\{?\\'e\}?  { fprintf(output, "é"); }
-\{?\\'i\}?  { fprintf(output, "í"); }
-\{?\\'o\}?  { fprintf(output, "ó"); }
-\{?\\'u\}?  { fprintf(output, "ú"); }
-\{?\\~a\}?  { fprintf(output, "ã"); }
+\{?\\'a\}?    { fprintf(output, "á"); }
+\{?\\'A\}?    { fprintf(output, "Á"); }
+\{?\\'e\}?    { fprintf(output, "é"); }
+\{?\\'i\}?    { fprintf(output, "í"); }
+\{?\\'o\}?    { fprintf(output, "ó"); }
+\{?\\'u\}?    { fprintf(output, "ú"); }
+\{?\\~a\}?    { fprintf(output, "ã"); }
 \{?\c\{c\}\}? { fprintf(output, "ç"); }
 
 {T}/[\ ]*[=][\ ]*["{] { 
 	fprintf(output, "%s = {", yytext); 
 }
 
-[\}\"][\,] { fprintf(output, "},\n"); }
+
+[\}\"][\,\n] { fprintf(output, "},\n"); }
 
 
-[A-Z]{L}+/([\ ]and|[\}\"]) {
+{LM}{L}+/([\ ]and|[\}\"]) {
 	sprintf(apelido,"%s, ", yytext);
 
 	for(j = 0; j < i; j++)
@@ -42,29 +44,31 @@ T       (author|editor)
 	fprintf(output, "%s", apelido);
 }
 
-
-[A-Z]/{L}+[\ ][A-Z] { 
+[A-ZÁÉÍÓÚ]/{L}+([A-Z]{L})?[\ ][A-Z]{L}+[\ ](and|[}\"]) {
 	sprintf(nomesProprios[i], "%s. ", yytext);
 	i++;
 }
 
 [\ ]and[\ ]   { fprintf(output, "%s", yytext); }
-[A-Z]{L}+[\,] { fprintf(output, "%s ", yytext); }
+{LM}{L}+[\,] { fprintf(output, "%s ", yytext); }
 
-([\ ]*[A-Z]{L}+)+[\,][\ ][A-Z]{L}+[\ ]?[A-Z]{L}* {
-	token = strtok(yytext, " ");
+({LM}{L}+)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
+	token = strtok(yytext, " ,");
 	x = 0;
     while(token != NULL) {
-      	if(x != 0)
-      		fprintf(output, "%c. ", token[0]);
+      	if(x != 0) {
+      		if(!strcmp("", token));
+      		else
+      			fprintf(output, "%c. ", token[0]);
+      	}
       	else
-      		fprintf(output, "%s ", token);
-      	token = strtok(NULL, " ");
+      		fprintf(output, "%s, ", token);
+      	token = strtok(NULL, " ,");
       	x++;
    }
 }
 
-[A-Z][\.] { fprintf(output, "%s ", yytext); }
+{LM}[\.] { fprintf(output, "%s ", yytext); }
 
 
 %%
@@ -72,7 +76,7 @@ T       (author|editor)
 
 int main (int argc, char* argv[]) {
     FILE *input;
-    input = fopen(argv[1],"r");
+    input = fopen(argv[1], "r");
     yyin = input;
     yylex();
     return 0;
