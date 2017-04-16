@@ -4,18 +4,19 @@ L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í|\.
 LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
 T       (author|editor)
 
+
 %%
   int i = 0, j = 0, x;
   char **nomesProprios = malloc(sizeof(char*)*20);
-  char *token;
+  char *token, *nomes;
+  int printNonMatched = 0;
   for(x = 0; x < 20; x++) {
-    nomesProprios[x] = malloc(sizeof(char)*64);
+	nomesProprios[x] = malloc(sizeof(char)*64);
   }
   char apelido[64];
   FILE *output = fopen("teste1.txt", "w");
 
-@string.*   { fprintf(output, "%s", yytext); }
-
+@.*  { fprintf(output, "%s", yytext); }
 
 \{?\\'a\}?    { fprintf(output, "á"); }
 \{?\\'A\}?    { fprintf(output, "Á"); }
@@ -26,16 +27,24 @@ T       (author|editor)
 \{?\\~a\}?    { fprintf(output, "ã"); }
 \{?\c\{c\}\}? { fprintf(output, "ç"); }
 
-{T}/[\ ]*[=][\ ]*["{] {
+
+[\ ]*{T}/[\ ]*[=][\ ]*["{][.\n]* {
 	fprintf(output, "%s = {", yytext);
 }
 
+[\ ]*[a-z]+[\ ]*[=][\ ]*["{][.\n]* {
+	fprintf(output, "%s", yytext);
+}
 
-[\}\"][\,\n] { fprintf(output, "},\n"); }
+[\}\"][\,] { fprintf(output, "},\n"); }
+[\}\"]/[\n] { fprintf(output, "}\n"); }
 
 
 {LM}{L}+/([\,]|([\ ]and|[\}\"])) {
-	sprintf(apelido,"%s, ", yytext);
+	if(i == 0) 
+		sprintf(apelido,"%s", yytext);
+	else
+		sprintf(apelido,"%s, ", yytext);
 
 	for(j = 0; j < i; j++)
 		strcat(apelido, nomesProprios[j]);
@@ -44,29 +53,23 @@ T       (author|editor)
 	fprintf(output, "%s", apelido);
 }
 
-[A-ZÁÉÍÓÚ]/[\.]|({L}+([A-Z]{L})?[\ ][A-Z]{L}+[\ ](and|[\}\"])) {
+[A-ZÁÉÍÓÚ]/[\.]|({L}+([A-Z]{L})?([\ ][A-Z]{L}+)*(([\ ]and)|[\}\"])) {
 	sprintf(nomesProprios[i], "%s.", yytext);
 	i++;
 }
 
 [\ ]and[\ ]   { fprintf(output, "%s", yytext); }
 
-({LM}{L}+)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
-	token = strtok(yytext, " ,");
-	x = 0;
-    while(token != NULL) {
-      	if(x != 0) {
-      		if(!strcmp("", token));
-      		else
-      			fprintf(output, "%c.", token[0]);
-      	}
-      	else
-      		fprintf(output, "%s, ", token);
-      	token = strtok(NULL, " ,");
-      	x++;
+({LM}{L}+[\ ]?)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
+	token = strtok(yytext, ",");
+	nomes = strtok(NULL, ",");
+	nomes = strtok(nomes, " ");
+	fprintf(output, "%s, ", token);
+    while(nomes != NULL) {
+      	fprintf(output, "%c.", nomes[0]); 		
+      	nomes = strtok(NULL, " ");
    }
 }
-
 
 %%
 
