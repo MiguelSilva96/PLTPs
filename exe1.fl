@@ -1,0 +1,54 @@
+%option noyywrap
+%{
+#include <glib.h>
+#include <string.h>
+GSList* list;
+GSList* iterator;
+FILE *infinitive;
+FILE *contracoes;
+%}
+
+L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
+LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
+
+%%
+  infinitive = fopen("lista.txt","w");
+  contracoes = fopen("contracoes.txt", "w");
+  int j, i = 0;
+  char *token = malloc(sizeof(char)*100);
+
+I/[\']m                        fprintf(contracoes,"%s am",yytext);
+{LM}?{L}+/[\']re               fprintf(contracoes,"%s are",yytext);
+{LM}?{L}+/[\']s                fprintf(contracoes,"%s is/has",yytext);
+{LM}?{L}+/[\']ve               fprintf(contracoes,"%s have",yytext);
+{LM}?{L}+/[\']ll               fprintf(contracoes,"%s will",yytext);
+{LM}?{L}+/[\']d                fprintf(contracoes,"%s had/would",yytext);
+can't                          fprintf(contracoes,"cannot");
+won't                          fprintf(contracoes,"will not");
+shan't                         fprintf(contracoes,"shall not");
+{LM}?{L}+/n[\']t               fprintf(contracoes,"%s not",yytext);
+
+to[\ ]{L}+          {token = strcpy(token, yytext+3);
+                    list = g_slist_insert_sorted(list, token,(GCompareFunc)g_ascii_strcasecmp);}
+[a-z]?[\'][a-z]+    {}
+.|\n                {fprintf(contracoes, "%s", yytext);}
+
+
+%%
+
+
+int main (int argc, char* argv[]) {
+    FILE *input;
+    iterator = NULL;
+    list = NULL;
+    char *auxiliar = malloc(sizeof(char)*100);
+    input = fopen(argv[1], "r");
+    infinitive = fopen("lista.txt","w");
+    contracoes = fopen("contracoes.txt", "w");
+    yyin = input;
+    yylex();
+    for (iterator = list; iterator; iterator = iterator->next) {
+        fprintf(infinitive,"%s\n", iterator->data);
+    }
+    return 0;
+}
