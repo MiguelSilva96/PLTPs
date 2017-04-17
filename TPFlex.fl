@@ -91,7 +91,7 @@ T       (author|editor)
 }
 	
 	/* Guardar nomes próprios atuais */
-[A-ZÁÉÍÓÚ]/({L}+([A-Z]{L})?([\ ]+[A-Z]{L}+)*(([\ ]+and)|[\}\"\ ]+)) {
+[A-ZÁÉÍÓÚ]/({L}+([A-Z]{L})?([\ ]+{LM}{L}+)*(([\ ]+and)|[\}\"\ ]+)) {
 	sprintf(nomesProprios[i], "%c.", yytext[0]);
 	i++;
 	BEGIN LIMPAR;
@@ -114,7 +114,10 @@ T       (author|editor)
 
 	/* Limpar restos dos matches de nomes proprios */
 <LIMPAR>{L}|[\ ] { }
-<LIMPAR>[\n] { BEGIN(INITIAL); }
+<LIMPAR>\n { 
+	fprintf(output, "%s", yytext); 
+	BEGIN(INITIAL); 
+}
 
 	/* 
 		Print o que sobrou para não se 
