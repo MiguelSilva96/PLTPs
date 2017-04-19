@@ -15,7 +15,7 @@ exe1: exe1.fl
 all: normNomes convAcentos exe1
 
 run:
-	./convAcentos exemplo-utf8.bib
+	./convAcentos BibTEX/exemplo-utf8.bib
 	./normNomes outAc.bib
 
 clean: 
