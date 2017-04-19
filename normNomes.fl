@@ -1,0 +1,144 @@
+%option noyywrap
+%s LIMPAR
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+%}
+
+L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í|\.
+LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
+T       (author|editor)
+AUX     (([\ ]+and)|[\}\"\ ]+))
+
+
+%%
+    int i = 0, j = 0, x;
+    int aspas = 0;
+    int otherTag = 0;
+    char **nomesProprios, *token;
+    char apelido[64], *nomes;
+
+    nomesProprios = malloc(sizeof(char *) * 20);
+    FILE *output  = fopen("out.bib", "w");
+    
+    for(x = 0; x < 20; x++)
+        nomesProprios[x] = malloc(sizeof(char) * 64);
+
+@.*  { fprintf(output, "%s", yytext); }
+
+
+    /* tags author e editor */
+{T}[\ ]*[=][\ ]*["] {
+    aspas = 1;
+    token = strtok(yytext, " =");
+    while(!strcmp(token, ""))
+        token = strtok(NULL, " =");
+    fprintf(output, "%s = {", token);
+    otherTag = 0;
+}
+    /* tags author e editor */
+{T}[\ ]*[=][\ ]*[{] {
+    token = strtok(yytext, " =");
+    while(!strcmp(token, ""))
+        token = strtok(NULL, " =");
+    fprintf(output, "%s = {", token);
+    otherTag = 0;
+}
+
+    /* print outras tags */
+[^{T}][\ ]*[=][\ ]*[{"].* {
+    otherTag = 1;
+    fprintf(output, "%s", yytext);
+}
+
+    /* Final com virgula */
+[\}\"][\,] { 
+    if(aspas) 
+        fprintf(output, "},"); 
+    else 
+        fprintf(output, "%s", yytext); 
+    aspas = 0; 
+}
+
+    /* Final com \n */
+[\}\"]/[\n] { 
+    if(aspas) 
+        fprintf(output, "}"); 
+    else 
+        fprintf(output, "%s", yytext); 
+    aspas = 0; 
+}
+
+    /* Apelidos + nomes proprios guardados */
+{LM}{L}+/([\,]|([\ ]and|[\}\"\ ]+)) {
+    if(!otherTag) {
+        if(i == 0) 
+            sprintf(apelido,"%s", yytext);
+        else
+            sprintf(apelido,"%s, ", yytext);
+
+        for(j = 0; j < i; j++)
+            strcat(apelido, nomesProprios[j]);
+
+        i = 0;
+        fprintf(output, "%s", apelido);
+        BEGIN LIMPAR;
+    }
+    else fprintf(output, "%s", yytext);
+}
+    
+    /* Guardar nomes próprios atuais */
+[A-ZÁÉÍÓÚ]/({L}+({LM}{L})?([\ ]+{LM}{L}+)*{AUX} {
+    if(!otherTag) {
+        sprintf(nomesProprios[i], "%s.", yytext);
+        i++;
+        BEGIN LIMPAR;
+    }
+    else fprintf(output, "%s", yytext);
+}
+
+    /* Print dos 'and' */
+[\ ]and[\ ] { fprintf(output, "%s", yytext); }
+
+    /* Tratar casos de nomes do tipo: X. X. YYYY */
+({LM}{L}+[\ ]?)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
+    if(!otherTag) {
+        token = strtok(yytext, ",");
+        nomes = strtok(NULL, ",");
+        nomes = strtok(nomes, " ");
+        fprintf(output, "%s, ", token);
+        while(nomes != NULL) {
+            fprintf(output, "%c.", nomes[0]);   
+            nomes = strtok(NULL, " ");
+        }
+    }
+    else fprintf(output, "%s", yytext);
+}
+
+
+    /* Limpar restos dos matches de nomes proprios */
+<LIMPAR>{L}|[\ ] { }
+<LIMPAR>\n { 
+    fprintf(output, "%s", yytext); 
+    BEGIN(INITIAL); 
+}
+
+    /* 
+        Print o que sobrou para não se 
+        perder info do ficheiro original 
+    */
+.|\n { fprintf(output, "%s", yytext); }
+
+
+%%
+
+
+int main (int argc, char* argv[]) {
+    FILE *input;
+    input = fopen(argv[1], "r");
+    yyin = input;
+    yylex();
+    return 0;
+}

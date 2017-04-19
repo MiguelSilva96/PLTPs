@@ -28,8 +28,8 @@ won't                          fprintf(contracoes,"will not");
 shan't                         fprintf(contracoes,"shall not");
 {LM}?{L}+/n[\']t               fprintf(contracoes,"%s not",yytext);
 
-to[\ ]{L}+          {sprintf(token, "%s", yytext+3);
-                    list = g_slist_insert_sorted(list, token,(GCompareFunc)g_ascii_strcasecmp);
+to[\ ]{L}+          {
+                    list = g_slist_insert_sorted(list, strdup(yytext+3),(GCompareFunc)g_ascii_strcasecmp);
                     }
 [a-z]?[\'][a-z]+    {}
 .|\n                {fprintf(contracoes, "%s", yytext);}
@@ -49,7 +49,7 @@ int main (int argc, char* argv[]) {
     yyin = input;
     yylex();
     for (iterator = list; iterator; iterator = iterator->next) {
-        fprintf(infinitive,"%s\n", iterator->data);
+        fprintf(infinitive,"%s\n", (char *)iterator->data);
     }
     return 0;
 }

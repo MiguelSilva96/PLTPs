@@ -1,0 +1,38 @@
+%option noyywrap
+
+
+%%
+    FILE *output  = fopen("outAc.bib", "w");
+
+    /* Acentuação */ 
+\{?\\'A\}?    { fprintf(output, "Á"); }
+\{?\\'E\}?    { fprintf(output, "É"); }
+\{?\\'I\}?    { fprintf(output, "Í"); }
+\{?\\'O\}?    { fprintf(output, "Ó"); }
+\{?\\'U\}?    { fprintf(output, "Ú"); }
+\{?\\~A\}?    { fprintf(output, "Ã"); }
+\{?\\'a\}?    { fprintf(output, "á"); }
+\{?\\'e\}?    { fprintf(output, "é"); }
+\{?\\'i\}?    { fprintf(output, "í"); }
+\{?\\'o\}?    { fprintf(output, "ó"); }
+\{?\\'u\}?    { fprintf(output, "ú"); }
+\{?\\~a\}?    { fprintf(output, "ã"); }
+\{?\c\{c\}\}? { fprintf(output, "ç"); }
+\{?\C\{C\}\}? { fprintf(output, "Ç"); }
+
+    /* 
+        Print o que sobrou para não se 
+        perder info do ficheiro original 
+    */
+.|\n { fprintf(output, "%s", yytext); }
+
+%%
+
+
+int main (int argc, char* argv[]) {
+    FILE *input;
+    input = fopen(argv[1], "r");
+    yyin = input;
+    yylex();
+    return 0;
+}
