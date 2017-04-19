@@ -30,6 +30,8 @@ all: normNomes convAcentos exe1
 run:
 	./convAcentos BibTEX/exemplo-utf8.bib
 	./normNomes outAc.bib
+
+graph:
 	./flexToDot1 out.bib
 	./flexToDot2 out2.bib
 	./flexToDot3 out3.bib

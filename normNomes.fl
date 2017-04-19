@@ -72,7 +72,7 @@ AUX     (([\ ]+and)|[\}\"\ ]+))
 }
 
     /* Apelidos + nomes proprios guardados */
-{LM}{L}+/([\,]|([\ ]and|[\}\"\ ]+)) {
+{LM}{L}+/([\,]|([\ ]+and|[\}\"\ ]+)) {
     if(!otherTag) {
         if(i == 0) 
             sprintf(apelido,"%s", yytext);
