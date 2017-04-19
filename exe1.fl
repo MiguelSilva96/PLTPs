@@ -10,12 +10,22 @@ FILE *contracoes;
 
 L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
 LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
+SU      i|you|he|she|it|we
+OB      me|him|her|it|your|us|them
+A       a|an
+P       the|this|this|those|these
+O       not|[^a-z]|[a-z]{1,2}
+MV      can|could|shall|should|will|would|may|might
+N       1|2|3|4|5|6|7|8|9|0
+NE      one|two|three|four|five|six|seven|eight|nine|zero
+AU      did|Did|do|Do|does|Does
 
 %%
   infinitive = fopen("lista.txt","w");
   contracoes = fopen("contracoes.txt", "w");
   int j, i = 0;
-  char *token = malloc(sizeof(char)*100);
+  char *token;
+  char* args[10];
 
 I/[\']m                        fprintf(contracoes,"%s am",yytext);
 {LM}?{L}+/[\']re               fprintf(contracoes,"%s are",yytext);
@@ -34,6 +44,37 @@ to[\ ]{L}+          {
 [a-z]?[\'][a-z]+    {}
 .|\n                {fprintf(contracoes, "%s", yytext);}
 
+I/[\']m                                                                   fprintf(contracoes,"%s am",yytext);
+{LM}?{L}+/[\']re                                                          fprintf(contracoes,"%s are",yytext);
+{LM}?{L}+/[\']s                                                           fprintf(contracoes,"%s is/has",yytext);
+{LM}?{L}+/[\']ve                                                          fprintf(contracoes,"%s have",yytext);
+{LM}?{L}+/[\']ll                                                          fprintf(contracoes,"%s will",yytext);
+{LM}?{L}+/[\']d                                                           fprintf(contracoes,"%s had/would",yytext);
+can't                                                                     fprintf(contracoes,"cannot");
+won't                                                                     fprintf(contracoes,"will not");
+shan't                                                                    fprintf(contracoes,"shall not");
+{LM}?{L}+/n[\']t                                                          fprintf(contracoes,"%s not",yytext);
+to[\ ]({OB}|{SU}|{A}|{P}|not|{O}|{N}+|{NE}([a-z]+)?|[a-z]+s)              {
+                                                                          fprintf(contracoes, "%s", yytext);
+                                                                          }
+to[\ ][a-z]+                                                              {
+                                                                          list = g_slist_insert_sorted(list, strdup(yytext+3),
+                                                                          (GCompareFunc)g_ascii_strcasecmp);
+                                                                          fprintf(contracoes, "%s", yytext);
+                                                                          }
+{AU}[\ ][a-z]+[\ ]({OB}|{SU}|{A}|{P}|not|{O}|{N}+|{NE}([a-z]+)?|[a-z]+s)  {
+                                                                          fprintf(contracoes, "%s", yytext);
+                                                                          }
+{AU}[\ ][a-z]+[\ ][a-z]+                                                  {
+                                                                          token = strdup(yytext);
+                                                                          args[i] = strtok(token, " ");
+                                                                          while(args[i] != NULL)
+                                                                          args[++i] = strtok(NULL, " ");
+                                                                          list = g_slist_insert_sorted(list, args[2],(GCompareFunc)g_ascii_strcasecmp);
+                                                                          i = 0;
+                                                                          }
+[a-z]?[\'][a-z]+                                                          {}
+.|\n                                                                      {fprintf(contracoes, "%s", yytext);}
 
 %%
 
@@ -49,7 +90,10 @@ int main (int argc, char* argv[]) {
     yyin = input;
     yylex();
     for (iterator = list; iterator; iterator = iterator->next) {
-        fprintf(infinitive,"%s\n", (char *)iterator->data);
+        if(strcmp(auxiliar,iterator->data) != 0) {
+          fprintf(infinitive,"%s\n", iterator->data);
+        }
+        auxiliar = iterator->data;
     }
     return 0;
 }
