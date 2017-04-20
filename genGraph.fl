@@ -1,0 +1,85 @@
+%option noyywrap
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* multi_tok(char *input, char *delimiter);
+%}
+
+L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í|\.
+LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
+NAME    {LM}{L}+([\,][\ ]({LM}[\.])+)?
+
+%%
+
+	FILE *output  = fopen("Graph/graph.dot", "w");
+	char **names, *token;
+	char last;
+	int flag = 0, i, j;
+	int start = 1;
+	names = (char **) malloc(sizeof(char *) * 20);
+
+(author|editor) { flag = 1; }
+
+{NAME}([\ ]+and[\ ]+{NAME})* {
+	if(start) {
+		fprintf(output,"strict graph G{\n");
+		start = 0;
+	}
+
+	if(flag) {
+		i = 0;
+		token      = multi_tok(yytext, " and ");
+		names[i++] = strdup(token);
+		token      = multi_tok(NULL, " and ");
+		while(token) {
+			j = 0;
+			while(j < i)
+				fprintf(output, "\"%s\" -- \"%s\"\n", names[j++], token);
+			names[i++] = strdup(token);
+			token = multi_tok(NULL, " and ");
+		}
+	}
+
+	flag = 0;
+
+}
+
+\n|. {}
+
+<<EOF>>   fprintf(output, "}\n"); return 0;
+
+
+%%
+
+char* multi_tok(char *input, char *delimiter) {
+    static char *string;
+    if (input != NULL)
+        string = input;
+
+    if (string == NULL)
+        return string;
+
+    char *end = strstr(string, delimiter);
+    if (end == NULL) {
+        char *temp = string;
+        string = NULL;
+        return temp;
+    }
+
+    char *temp = string;
+
+    *end = '\0';
+    string = end + strlen(delimiter);
+    return temp;
+}
+
+int main (int argc, char* argv[]) {
+    FILE *input;
+    input = fopen(argv[1], "r");
+    yyin = input;
+    yylex();
+    return 0;
+}
