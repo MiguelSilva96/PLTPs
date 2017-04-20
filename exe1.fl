@@ -27,22 +27,6 @@ AU      did|Did|do|Do|does|Does
   char *token;
   char* args[10];
 
-I/[\']m                        fprintf(contracoes,"%s am",yytext);
-{LM}?{L}+/[\']re               fprintf(contracoes,"%s are",yytext);
-{LM}?{L}+/[\']s                fprintf(contracoes,"%s is/has",yytext);
-{LM}?{L}+/[\']ve               fprintf(contracoes,"%s have",yytext);
-{LM}?{L}+/[\']ll               fprintf(contracoes,"%s will",yytext);
-{LM}?{L}+/[\']d                fprintf(contracoes,"%s had/would",yytext);
-can't                          fprintf(contracoes,"cannot");
-won't                          fprintf(contracoes,"will not");
-shan't                         fprintf(contracoes,"shall not");
-{LM}?{L}+/n[\']t               fprintf(contracoes,"%s not",yytext);
-
-to[\ ]{L}+          {
-                    list = g_slist_insert_sorted(list, strdup(yytext+3),(GCompareFunc)g_ascii_strcasecmp);
-                    }
-[a-z]?[\'][a-z]+    {}
-.|\n                {fprintf(contracoes, "%s", yytext);}
 
 I/[\']m                                                                   fprintf(contracoes,"%s am",yytext);
 {LM}?{L}+/[\']re                                                          fprintf(contracoes,"%s are",yytext);
