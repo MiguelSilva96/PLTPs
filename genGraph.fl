@@ -25,15 +25,19 @@ NAME    {LM}{L}+([\,][\ ]({LM}[\.])+)?
 
 {NAME}([\ ]+and[\ ]+{NAME})* {
 	if(start) {
-		fprintf(output,"strict graph G{\n");
+		fprintf(output, "strict graph G{\n");
+		fprintf(output, "ranksep=\"1.0 equally\"\n");
+		fprintf(output, "bgcolor=lightsteelblue4;\n");
+		fprintf(output, "edge [color=grey94];\n");
+		fprintf(output, "node [shape=box,style=filled,color=grey];\n");
 		start = 0;
 	}
 
 	if(flag) {
 		i = 0;
-		token      = multi_tok(yytext, " and ");
+		token = multi_tok(yytext, " and ");
 		names[i++] = strdup(token);
-		token      = multi_tok(NULL, " and ");
+		token = multi_tok(NULL, " and ");
 		while(token) {
 			j = 0;
 			while(j < i)

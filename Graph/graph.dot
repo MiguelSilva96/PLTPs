@@ -1,4 +1,8 @@
 strict graph G{
+ranksep="1.0 equally"
+bgcolor=lightsteelblue4;
+edge [color=grey94];
+node [shape=box,style=filled,color=grey];
 "Martins, F.M." -- "Almeida, J.J."
 "Martins, F.M." -- "Henriques, P.R."
 "Almeida, J.J." -- "Henriques, P.R."
