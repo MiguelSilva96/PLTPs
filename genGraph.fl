@@ -16,7 +16,7 @@ NAME    {LM}{L}+([\,][\ ]({LM}[\.])+)?
 
 	FILE *output  = fopen("Graph/graph.dot", "w");
 	char **names, *token;
-	char last;
+	char format[64] = "\"%s\" -- \"%s\"\n";
 	int flag = 0, i, j;
 	int start = 1;
 	names = (char **) malloc(sizeof(char *) * 20);
@@ -41,7 +41,7 @@ NAME    {LM}{L}+([\,][\ ]({LM}[\.])+)?
 		while(token) {
 			j = 0;
 			while(j < i)
-				fprintf(output, "\"%s\" -- \"%s\"\n", names[j++], token);
+				fprintf(output, format, names[j++], token);
 			names[i++] = strdup(token);
 			token = multi_tok(NULL, " and ");
 		}
