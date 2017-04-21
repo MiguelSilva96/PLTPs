@@ -5,20 +5,20 @@
     FILE *output  = fopen("outAc.bib", "w");
 
     /* Acentuação */ 
-\{?\\'A\}?    { fprintf(output, "Á"); }
-\{?\\'E\}?    { fprintf(output, "É"); }
-\{?\\'I\}?    { fprintf(output, "Í"); }
-\{?\\'O\}?    { fprintf(output, "Ó"); }
-\{?\\'U\}?    { fprintf(output, "Ú"); }
-\{?\\~A\}?    { fprintf(output, "Ã"); }
-\{?\\'a\}?    { fprintf(output, "á"); }
-\{?\\'e\}?    { fprintf(output, "é"); }
-\{?\\'i\}?    { fprintf(output, "í"); }
-\{?\\'o\}?    { fprintf(output, "ó"); }
-\{?\\'u\}?    { fprintf(output, "ú"); }
-\{?\\~a\}?    { fprintf(output, "ã"); }
-\{?\c\{c\}\}? { fprintf(output, "ç"); }
-\{?\C\{C\}\}? { fprintf(output, "Ç"); }
+\{?\\'A\}?     { fprintf(output, "Á"); }
+\{?\\'E\}?     { fprintf(output, "É"); }
+\{?\\'I\}?     { fprintf(output, "Í"); }
+\{?\\'O\}?     { fprintf(output, "Ó"); }
+\{?\\'U\}?     { fprintf(output, "Ú"); }
+\{?\\~A\}?     { fprintf(output, "Ã"); }
+\{?\\'a\}?     { fprintf(output, "á"); }
+\{?\\'e\}?     { fprintf(output, "é"); }
+\{?\\'i\}?     { fprintf(output, "í"); }
+\{?\\'o\}?     { fprintf(output, "ó"); }
+\{?\\'u\}?     { fprintf(output, "ú"); }
+\{?\\~a\}?     { fprintf(output, "ã"); }
+\{?\\c\{c\}\}? { fprintf(output, "ç"); }
+\{?\\C\{C\}\}? { fprintf(output, "Ç"); }
 
     /* 
         Print o que sobrou para não se 

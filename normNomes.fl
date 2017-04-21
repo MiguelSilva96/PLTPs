@@ -100,7 +100,7 @@ AUX     (([\ ]+and)|[\}\"\ ]+))
 }
 
     /* Print dos 'and' */
-[\ ]and[\ ] { fprintf(output, "%s", yytext); }
+[\ \n\r]and[\ \n\r] { fprintf(output, " and "); }
 
     /* Tratar casos de nomes do tipo: X. X. YYYY */
 ({LM}{L}+[\ ]?)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
@@ -110,7 +110,14 @@ AUX     (([\ ]+and)|[\}\"\ ]+))
         nomes = strtok(nomes, " ");
         fprintf(output, "%s, ", token);
         while(nomes != NULL) {
-            fprintf(output, "%c.", nomes[0]);   
+            int ascii = nomes[1];
+            
+            //Nao é letra (<65 >122) e nao é ponto (46)
+            //Serve pra encontrar casos com acento
+            if((ascii < 65 || ascii > 122) && ascii != 46)
+                fprintf(output, "%c%c.", nomes[0], nomes[1]);
+            else
+                fprintf(output, "%c.", nomes[0]);   
             nomes = strtok(NULL, " ");
         }
     }
