@@ -5,60 +5,78 @@
 GSList* list;
 GSList* iterator;
 FILE *infinitive;
-FILE *contracoes;
+FILE *Contracoes;
 %}
 
-L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
-LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
-SU      i|you|he|she|it|we
-OB      me|him|her|it|your|us|them
-A       a|an
-P       the|this|this|those|these
-O       not|[^a-z]|[a-z]{1,2}
-MV      can|could|shall|should|will|would|may|might
-N       1|2|3|4|5|6|7|8|9|0
-NE      one|two|three|four|five|six|seven|eight|nine|zero
-AU      did|Did|do|Do|does|Does
-
+L           [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
+LM          [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
+SU          i|you|he|she|it|we
+OB          me|him|her|it|your|us|them
+AV          how|then|more|also|here|there|still|never|when|really|back|just|by
+A           a|an
+P           the|this|this|those|these|that
+O           not|[^a-z]
+MV          can|could|shall|should|will|would|may|might
+N           1|2|3|4|5|6|7|8|9|0
+NE          one|two|three|four|five|six|seven|eight|nine
+AU          did|Did|do|Do|does|Does
+Q           all|some|several|enough|numerous|few
+EXCEPTIONS  ({OB}|{SU}|{A}|{P}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV})
 %%
-  infinitive = fopen("lista.txt","w");
-  contracoes = fopen("contracoes.txt", "w");
+
+  infinitive = fopen("Verbos.txt","w");
+  Contracoes = fopen("Contracoes.txt", "w");
   int j, i = 0;
   char *token;
   char* args[10];
 
 
-I/[\']m                                                                   fprintf(contracoes,"%s am",yytext);
-{LM}?{L}+/[\']re                                                          fprintf(contracoes,"%s are",yytext);
-{LM}?{L}+/[\']s                                                           fprintf(contracoes,"%s is/has",yytext);
-{LM}?{L}+/[\']ve                                                          fprintf(contracoes,"%s have",yytext);
-{LM}?{L}+/[\']ll                                                          fprintf(contracoes,"%s will",yytext);
-{LM}?{L}+/[\']d                                                           fprintf(contracoes,"%s had/would",yytext);
-can't                                                                     fprintf(contracoes,"cannot");
-won't                                                                     fprintf(contracoes,"will not");
-shan't                                                                    fprintf(contracoes,"shall not");
-{LM}?{L}+/n[\']t                                                          fprintf(contracoes,"%s not",yytext);
-to[\ ]({OB}|{SU}|{A}|{P}|not|{O}|{N}+|{NE}([a-z]+)?|[a-z]+s)              {
-                                                                          fprintf(contracoes, "%s", yytext);
-                                                                          }
-to[\ ][a-z]+                                                              {
-                                                                          list = g_slist_insert_sorted(list, strdup(yytext+3),
-                                                                          (GCompareFunc)g_ascii_strcasecmp);
-                                                                          fprintf(contracoes, "%s", yytext);
-                                                                          }
-{AU}[\ ][a-z]+[\ ]({OB}|{SU}|{A}|{P}|not|{O}|{N}+|{NE}([a-z]+)?|[a-z]+s)  {
-                                                                          fprintf(contracoes, "%s", yytext);
-                                                                          }
-{AU}[\ ][a-z]+[\ ][a-z]+                                                  {
-                                                                          token = strdup(yytext);
-                                                                          args[i] = strtok(token, " ");
-                                                                          while(args[i] != NULL)
-                                                                          args[++i] = strtok(NULL, " ");
-                                                                          list = g_slist_insert_sorted(list, args[2],(GCompareFunc)g_ascii_strcasecmp);
-                                                                          i = 0;
-                                                                          }
-[a-z]?[\'][a-z]+                                                          {}
-.|\n                                                                      {fprintf(contracoes, "%s", yytext);}
+I/[\']m                          fprintf(Contracoes,"%s am",yytext);
+{LM}?{L}+/[\']re                 fprintf(Contracoes,"%s are",yytext);
+{LM}?{L}+/[\']s                  fprintf(Contracoes,"%s is/has",yytext);
+{LM}?{L}+/[\']ve                 fprintf(Contracoes,"%s have",yytext);
+{LM}?{L}+/[\']ll                 fprintf(Contracoes,"%s will",yytext);
+{LM}?{L}+/[\']d                  fprintf(Contracoes,"%s had/would",yytext);
+can't                            fprintf(Contracoes,"cannot");
+won't                            fprintf(Contracoes,"will not");
+shan't                           fprintf(Contracoes,"shall not");
+{LM}?{L}+/n[\']t                 fprintf(Contracoes,"%s not",yytext);
+to[\ ]{EXCEPTIONS}               {
+                                 fprintf(Contracoes, "%s", yytext);
+                                 }
+to[\ ][a-z]+                     {
+                                 list = g_slist_insert_sorted(list,
+                                 strdup(yytext+3),
+                                 (GCompareFunc)g_ascii_strcasecmp);
+                                 fprintf(Contracoes, "%s", yytext);
+                                 }
+{MV}[\ ]{EXCEPTIONS}             {
+                                 fprintf(Contracoes, "%s", yytext);
+                                 }
+{MV}[\ ][a-z]+                   {
+                                 token = strdup(yytext);
+                                 args[i] = strtok(token, " ");
+                                 args[++i] = strtok(NULL, " ");
+                                 list = g_slist_insert_sorted(list, args[1],
+                                 (GCompareFunc)g_ascii_strcasecmp);
+                                 i = 0;
+                                 fprintf(Contracoes, "%s", yytext);
+                                 }
+{AU}[\ ][a-z]+[\ ]{EXCEPTIONS}   {
+                                 fprintf(Contracoes, "%s", yytext);
+                                 }
+{AU}[\ ][a-z]+[\ ][a-z]+         {
+                                 token = strdup(yytext);
+                                 args[i] = strtok(token, " ");
+                                 while(args[i] != NULL)
+                                  args[++i] = strtok(NULL, " ");
+                                 list = g_slist_insert_sorted(list, args[2],
+                                 (GCompareFunc)g_ascii_strcasecmp);
+                                 i = 0;
+                                 fprintf(Contracoes, "%s", yytext);
+                                 }
+[a-z]?[\'][a-z]+                 {}
+.|\n                             {fprintf(Contracoes, "%s", yytext);}
 
 %%
 
@@ -69,13 +87,13 @@ int main (int argc, char* argv[]) {
     list = NULL;
     char *auxiliar = malloc(sizeof(char)*100);
     input = fopen(argv[1], "r");
-    infinitive = fopen("lista.txt","w");
-    contracoes = fopen("contracoes.txt", "w");
+    infinitive = fopen("Verbos.txt","w");
+    Contracoes = fopen("Contracoes.txt", "w");
     yyin = input;
     yylex();
     for (iterator = list; iterator; iterator = iterator->next) {
         if(strcmp(auxiliar,iterator->data) != 0) {
-          fprintf(infinitive,"%s\n", iterator->data);
+          fprintf(infinitive,"%s\n", (char *)iterator->data);
         }
         auxiliar = iterator->data;
     }
