@@ -12,23 +12,24 @@ FILE *Contracoes;
 L           [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
 LM          [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
 SU          i|you|he|she|it|we
-OB          me|my|him|her|it|its|your|us|them
+OB          me|him|her[s]?|it[s]?|your[s]?|us|them
+PP          my|his|mine|their[s]?|our[s]?
 AV          how|then|more|also|here|there|still|never|when|really|back|just|by
-C	          for|and|nor|but|or|yet|so|if|after|before|even|in|once
+C	          for|and|nor|but|or|yet|so|if|after|before|even|in|once|now
 CC	        only|until|while|when|where|thought|till|whe[a-z]+
 RP	        that|which|who|whom|whose|whichever|who[a-z]+
 A           a|an
 DP          the|this|those|these
 IP          any|most|none|both|many|several|anybody|anyone|anything|each
 IPP         either|everbody|everyone|neither|nobody|nothing|some[a-z]+
-O           not|[^a-z]
-MV          can|could|shall|should|will|would|may|might
+O           not|[^a-z]|from|new|with
+MV          [Cc]an['n]?|[Cc]ould[n't]?|[Ss]hall|[Ss]hant|[Ss]hould[n't]?|[Ww]ill|[Ww]on't|[Ww]ould[n't]?|[Mm]ay[n't]?|[Mm]ight[n't]?
 N           1|2|3|4|5|6|7|8|9|0
 NE          one|two|three|four|five|six|seven|eight|nine
-AU          did|Did|do|Do|does|Does
-Q           all|some|several|enough|numerous|few
-T	          ([a-z]+[ijquv])|([a-z]+[rfz][fz])
-EXCEPTIONS  ({OB}|{SU}|{A}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV}|{Q}|{C}|{CC}|{RP}|{DP}|{IP}|{IPP}|{T})
+AU          [Dd]id[n't]?|[Dd]o[n't]?|[Dd]oes[n't]?
+Q           all|some|several|enough|numerous|few|another|same
+T	          ([a-z]+[ijquv])|([a-z]+[rfz][fz])|([a-z]+(ing|ed|lly|[^s]s|es))
+EXCEPTIONS  ({OB}|{SU}|{A}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV}|{Q}|{C}|{CC}|{RP}|{DP}|{PP}|{IP}|{IPP}|{T})
 
 %%
 
@@ -38,20 +39,21 @@ EXCEPTIONS  ({OB}|{SU}|{A}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV}|{Q}|{C}|{CC}|{RP}|{DP
   char* args[10];
 
 
-I/[\']m                          fprintf(Contracoes,"%s am",yytext);
-{LM}?{L}+/[\']re                 fprintf(Contracoes,"%s are",yytext);
-{LM}?{L}+/[\']s                  fprintf(Contracoes,"%s is/has",yytext);
-{LM}?{L}+/[\']ve                 fprintf(Contracoes,"%s have",yytext);
-{LM}?{L}+/[\']ll                 fprintf(Contracoes,"%s will",yytext);
-{LM}?{L}+/[\']d                  fprintf(Contracoes,"%s had/would",yytext);
-can't                            fprintf(Contracoes,"cannot");
-won't                            fprintf(Contracoes,"will not");
-shan't                           fprintf(Contracoes,"shall not");
-{LM}?{L}+/n[\']t                 fprintf(Contracoes,"%s not",yytext);
-to[\ ]{EXCEPTIONS}               {
+'m                                      fprintf(Contracoes, " am");
+'re                                     fprintf(Contracoes, " are");
+'s                                      fprintf(Contracoes, " is/has");
+'ve                                     fprintf(Contracoes, " have");
+'ll                                     fprintf(Contracoes, " will");
+'d                                      fprintf(Contracoes, " had/would");
+can't                                   fprintf(Contracoes, "cannot");
+won't                                   fprintf(Contracoes, "will not");
+shan't                                  fprintf(Contracoes, "shall not");
+{LM}?{L}+/n[\']t                        fprintf(Contracoes, "%s not", yytext);
+
+[Tt]o[\ ]{EXCEPTIONS}            {
                                  fprintf(Contracoes, "%s", yytext);
                                  }
-to[\ ][a-z]+                     {
+[Tt]o[\ ][a-z]+                  {
                                  list = g_slist_insert_sorted(list,
                                  strdup(yytext+3),
                                  (GCompareFunc)g_ascii_strcasecmp);
@@ -69,10 +71,10 @@ to[\ ][a-z]+                     {
                                  i = 0;
                                  fprintf(Contracoes, "%s", yytext);
                                  }
-{AU}[\ ][a-z]+[\ ]{EXCEPTIONS}   {
-                                 fprintf(Contracoes, "%s", yytext);
-                                 }
-{AU}[\ ][a-z]+[\ ][a-z]+         {
+{AU}[\ ][a-zA-Z]+[\ ]{EXCEPTIONS}   {
+                                        fprintf(Contracoes, "%s", yytext);
+                                    }
+{AU}[\ ][a-zA-Z]+[\ ][a-z]+      {
                                  token = strdup(yytext);
                                  args[i] = strtok(token, " ");
                                  while(args[i] != NULL)
@@ -82,7 +84,7 @@ to[\ ][a-z]+                     {
                                  i = 0;
                                  fprintf(Contracoes, "%s", yytext);
                                  }
-[a-z]?[\'][a-z]+                 {}
+n[\']t                           {}
 .|\n                             {fprintf(Contracoes, "%s", yytext);}
 
 %%
