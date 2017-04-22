@@ -12,17 +12,24 @@ FILE *Contracoes;
 L           [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í
 LM          [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
 SU          i|you|he|she|it|we
-OB          me|him|her|it|your|us|them
+OB          me|my|him|her|it|its|your|us|them
 AV          how|then|more|also|here|there|still|never|when|really|back|just|by
+C	          for|and|nor|but|or|yet|so|if|after|before|even|in|once
+CC	        only|until|while|when|where|thought|till|whe[a-z]+
+RP	        that|which|who|whom|whose|whichever|who[a-z]+
 A           a|an
-P           the|this|this|those|these|that
+DP          the|this|those|these
+IP          any|most|none|both|many|several|anybody|anyone|anything|each
+IPP         either|everbody|everyone|neither|nobody|nothing|some[a-z]+
 O           not|[^a-z]
 MV          can|could|shall|should|will|would|may|might
 N           1|2|3|4|5|6|7|8|9|0
 NE          one|two|three|four|five|six|seven|eight|nine
 AU          did|Did|do|Do|does|Does
 Q           all|some|several|enough|numerous|few
-EXCEPTIONS  ({OB}|{SU}|{A}|{P}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV})
+T	          ([a-z]+[ijquv])|([a-z]+[rfz][fz])
+EXCEPTIONS  ({OB}|{SU}|{A}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV}|{Q}|{C}|{CC}|{RP}|{DP}|{IP}|{IPP}|{T})
+
 %%
 
   Contracoes = fopen("Contracoes.txt", "w");
@@ -94,7 +101,7 @@ int main (int argc, char* argv[]) {
     strcpy(dict, "https://dictionary.cambridge.org/dictionary/english/");
     strcpy(pencil, "<i class='fa fa-pencil'> </i>");
     strcpy(book, "<i class='fa fa-book'></i>");
-    
+
     iterator = NULL;
     list  = NULL;
     input = fopen(argv[1], "r");
@@ -113,10 +120,10 @@ int main (int argc, char* argv[]) {
 
 
     for (iterator = list; iterator; iterator = iterator->next) {
-        
+
         if(strcmp(auxiliar,iterator->data) != 0) {
             aux = (char *)iterator->data;
-            
+
             if(ultima != aux[0]) {
                 fprintf(outV, "</ul>");
                 letter = toupper(aux[0]);
@@ -124,7 +131,7 @@ int main (int argc, char* argv[]) {
                 fprintf(outV, "<ul id='%c'>\n", letter);
                 ultima = aux[0];
             }
-            
+
             fprintf(outV, "<li> %s ", aux);
             fprintf(outV, "%s", arrow);
             fprintf(outV, search, dict, aux, "target='_blank'");
