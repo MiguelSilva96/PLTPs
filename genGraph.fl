@@ -10,7 +10,8 @@ char* multi_tok(char *input, char *delimiter);
 
 L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í|\.
 LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
-NAME    {LM}{L}+([\,][\ ]({LM}[\.])+)?
+N       (da|dos|de)[\ ]
+NAME    {N}?({LM}{L}+)+([\,][\ ]({LM}[\.])+)?
 
 %%
 

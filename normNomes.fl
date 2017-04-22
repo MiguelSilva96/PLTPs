@@ -7,11 +7,11 @@
 #include <string.h>
 %}
 
-L       [a-z]|ú|ù|á|à|ç|é|è|õ|ó|ò|ã|ì|í|\.
+L       [a-z]|ú|ù|á|à|ç|é|ê|è|õ|ó|ò|ã|ì|í|\.
 LM      [A-Z]|Ú|Ù|Á|À|Ç|É|È|Õ|Ó|Ò|Ã|Ì|Í
 T       (author|editor)
-AUX     (([\ ]+and)|[\}\"\ ]+))
-
+AUX     (([\ ]+and)|[\}\"\ ]*))
+N       (da|dos|de)[\ ]
 
 %%
     int i = 0, j = 0, x;
@@ -72,7 +72,7 @@ AUX     (([\ ]+and)|[\}\"\ ]+))
 }
 
     /* Apelidos + nomes proprios guardados */
-{LM}{L}+/([\,]|([\ ]+and|[\}\"\ ]+)) {
+([\ ]{N})?{LM}{L}+/([\,]|([\ ]+and|[\}\"\ ]*)) {
     if(!otherTag) {
         if(i == 0) 
             sprintf(apelido,"%s", yytext);
@@ -90,7 +90,7 @@ AUX     (([\ ]+and)|[\}\"\ ]+))
 }
     
     /* Guardar nomes próprios atuais */
-[A-ZÁÉÍÓÚ]/({L}+({LM}{L})?([\ ]+{LM}{L}+)*{AUX} {
+[A-ZÁÉÍÓÚ]/({L}+({LM}{L}+)*([\ ]+{N}?{LM}{L}+){AUX} {
     if(!otherTag) {
         sprintf(nomesProprios[i], "%s.", yytext);
         i++;
