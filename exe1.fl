@@ -2,9 +2,10 @@
 %{
 #include <glib.h>
 #include <string.h>
+#include <ctype.h>
 GSList* list;
 GSList* iterator;
-FILE *infinitive;
+FILE *outV;
 FILE *Contracoes;
 %}
 
@@ -24,7 +25,6 @@ Q           all|some|several|enough|numerous|few
 EXCEPTIONS  ({OB}|{SU}|{A}|{P}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV})
 %%
 
-  infinitive = fopen("Verbos.txt","w");
   Contracoes = fopen("Contracoes.txt", "w");
   int j, i = 0;
   char *token;
@@ -83,19 +83,55 @@ to[\ ][a-z]+                     {
 
 int main (int argc, char* argv[]) {
     FILE *input;
+    int z = 0;
+    char *auxiliar = malloc(sizeof(char)*100), *aux;
+    char format[128], search[128], book[64];
+    char arrow[64], dict[256], pencil[64];
+    char letter, ultima = ' ';
+    strcpy(format, "<a onClick='oL(\"%c\")'><p> Letter %c%s </p></a>\n");
+    strcpy(search, "<a href='%s%s'%s><i class='fa fa-search'></i></a></li>\n");
+    strcpy(arrow, "<a><i class='fa fa-arrow-right'></i></a>");
+    strcpy(dict, "https://dictionary.cambridge.org/dictionary/english/");
+    strcpy(pencil, "<i class='fa fa-pencil'> </i>");
+    strcpy(book, "<i class='fa fa-book'></i>");
+    
     iterator = NULL;
-    list = NULL;
-    char *auxiliar = malloc(sizeof(char)*100);
+    list  = NULL;
     input = fopen(argv[1], "r");
-    infinitive = fopen("Verbos.txt","w");
+    outV  = fopen("verbos.html","w");
     Contracoes = fopen("Contracoes.txt", "w");
     yyin = input;
     yylex();
+
+    fprintf(outV, "<!DOCTYPE html> <html> <head>\n");
+    fprintf(outV, "<title> Ingles </title>\n");
+    fprintf(outV, "<link rel='stylesheet' href='css/styles.css'>\n");
+    fprintf(outV, "<link rel='stylesheet' href='css/fa/css/font-awesome.css'>\n");
+    fprintf(outV, "<script src='js/script.js'></script>\n");
+    fprintf(outV, "<meta charset='utf-8'/> </head> <body>\n");
+    fprintf(outV, "<h1 class='bg-4 title'> Verbs %s</h1>\n",book);
+
+
     for (iterator = list; iterator; iterator = iterator->next) {
+        
         if(strcmp(auxiliar,iterator->data) != 0) {
-          fprintf(infinitive,"%s\n", (char *)iterator->data);
+            aux = (char *)iterator->data;
+            
+            if(ultima != aux[0]) {
+                fprintf(outV, "</ul>");
+                letter = toupper(aux[0]);
+                fprintf(outV, format, letter, letter, pencil);
+                fprintf(outV, "<ul id='%c'>\n", letter);
+                ultima = aux[0];
+            }
+            
+            fprintf(outV, "<li> %s ", aux);
+            fprintf(outV, "%s", arrow);
+            fprintf(outV, search, dict, aux, "target='_blank'");
         }
+
         auxiliar = iterator->data;
     }
+    fprintf(outV, "</body> </html>\n");
     return 0;
 }

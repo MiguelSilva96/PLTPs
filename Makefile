@@ -26,4 +26,4 @@ run:
 
 
 clean: 
-	rm -f *.bib normNomes convAcentos genGraph exe1 lex.yy.c *.txt
+	rm -f *.bib normNomes convAcentos genGraph exe1 lex.yy.c *.txt *.html

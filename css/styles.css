@@ -1,0 +1,81 @@
+/*
+ *Silva
+*/
+
+body {
+	font: 20px sans-serif;
+	line-height: 2.0;
+	color: #f5f6f7;
+	background-color: #2f2f2f;
+
+ }
+
+*{
+     margin:5px auto;
+}
+
+html, body{
+     text-align:center;
+}
+
+p { 
+	background-color: #dcdcdc;
+	border-radius: 8px;
+	color: #333333;
+	text-align: center;
+	width: 25%;
+}
+
+li {
+	text-align: left;
+	color: #abcde;
+}
+
+ul {
+	background-color: #555555;
+	display: none;
+	border-radius: 10px;
+	width: 50%;
+}
+
+
+.aux {
+	background-color: #fff;
+	color: #555555 !important;
+	border-radius: 8px;
+	padding-left: 10px;
+}
+
+.bg-2 { 
+	background-color: #474e5d; 
+	color: #ffffff;
+	padding-left: 10px;
+	border-radius: 10px;
+}
+
+.bg-3 { 
+	background-color: #dcdcdc;
+	color: #555555;
+	border-radius: 10px;
+	padding-left: 10px;
+}
+
+.bg-4 { 
+	background-color: #2f2f2f; 
+	color: #fff;
+}
+
+.title {
+	color: #7f7;
+	text-align: center;
+}
+
+a {
+	color: #abcdef;
+	cursor: pointer; cursor: hand;
+}
+
+a:hover p:hover {
+	color: #abcdef !important;
+	background-color: #474e5d; 
+}

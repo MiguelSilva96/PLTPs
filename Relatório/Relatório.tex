@@ -92,10 +92,11 @@
 
 %%%%\input{LPgeneralDefintions}
 
-\title{ \textbf{Flex} \\ \textbf{Normalizador de Autores em BibTex}\\ 
-\textbf{} \\
-\textbf{Processador de Inglês corrente} \\
-\textbf{} \\ Processamento de Linguagens\\(3º ano de Curso)\\ 
+\title{ \textbf{Normalizador de Autores em BibTex}\\ 
+\textbf{\&} \\
+\textbf{Processador de Inglês corrente} \\ 
+\textbf{em Flex} \\ \textbf{} \\
+Processamento de Linguagens\\(3º ano de Curso)\\ 
 \textbf{Trabalho Prático nº1 - Parte B}\\ Relatório de Desenvolvimento}
 \author{José Silva\\ (A74601) \and Pedro Cunha\\ (A73958) \and Gonçalo Moreira\\ (A73591) }
 \date{\today}
@@ -105,11 +106,9 @@
 \maketitle
 
 \begin{abstract}
-abstract.................
-.......................
-.....................
-..............
-..........
+Documentação do segundo trabalho prático da unidade curricular de "Processamento de Linguagens", o principal foco incide em utilizar o analisador léxico FLEX, para desenvolver processadores de texto. 
+Simplifica o trabalho que seria necessário utilizando diretamente a linguagem de programação C, facilitando o processo. 
+Demonstrando e documentando as soluções propostas pelo grupo de trabalho para os doius problemas escolhidos, termina-se o relatório com uma análise argumentativa sobre a eficiência dessas mesmas soluções. 
 \end{abstract}
 
 \tableofcontents
@@ -123,41 +122,107 @@ Cenas introdutórias............
 ..............
 
 
-\section*{Estrutura do Relatório} \
-
-x
+\section*{Estrutura do Relatório}
+No capítulo 1 faz-se uma pequena introdução ao problema e às ferramentas utilizadas para a resolução deste. Para além disso, é descrita de uma forma breve a estrutura do relatório.\par
+No capítulo 2 faz-se uma análise breve mas mais detalhada do problema escolhido pelo grupo de trabalho.\par
+No capítulo 3 é descrito de uma forma sumarizada o procedimento utilizado para solucionar as várias questões propostas pelos enunciados.\par
+No capítulo 4 são apresentados alguns testes e respetivos resultados para comprovar o respectivo funcionamento das soluções apresentadas.\par
+Finalmente, no capítulo 5 termina-se o relatório com uma síntese do que foi dito, as conclusões e o trabalho futuro.
 
 \chapter{Análise e Especificação} \label{ae}
-\section{Descrição informal do problema}
-x
-\section{Especificação dos Requisitos}
-\subsection{Dados}
-x
-\subsection{Pedidos}
-x
+
+\section{Normalizador de Autores em BibTex}
+
+\subsection{Descrição informal do problema}
+É fornecido um ficheiro em BibTex(como input), com várias entradas e diversos autores e editores por entrada.
+Pretende-se que se desenvolva um "Normalizador" para ler esse mesmo ficheiro e gerar um ficheiro equivalente
+(em BibTex)com os nomes de todos os editores e autores normalizados. Também se pretende converter todos os carateres com acentos explícitos em caracteres portugueses.
+A forma de normalização dos nomes e dos acentos explícitos é apresentada em detalhe a baixo, na Especificação dos Requisitos.
+\subsection{Especificação dos Requisitos}
+\subsubsection{Dados}
+Como já foi referido, é fornecido um ficheiro em BibTex com várias entradas e diversos autores e editores por entrada. Este ficheiro contém, em cada entrada, diversos fields que poderão ou não incluir os fields author e editor. Podem existir
+diversos tipos de entrada, com número e tipos diferentes de fields.\par
+Cada field pode ocupar uma ou mais linhas, dependendo da informação que o mesmo representa. Na maioria dos casos de editor
+e author ocupa apenas uma, mas não é regra. Quando existem muitos autores e/ou editores é normal que sejam
+necessárias mais linhas. Podem também existir acentos explícitos em qualquer field que tenha texto, incluindo nos nomes
+de editores e autores.
+\subsubsection{Pedidos}
+Como primeiro requisito, é pedido que todos os acentos explícitos(e cedilhas) sejam convertidos para caracteres portugueses,
+ exemplos:\par
+Anast\textbackslash'acia ou Anast\{\textbackslash'a\}cia deve ser convertido em: Anastácia. \\
+Gon\textbackslash c\{c\}alo ou Gon\{\textbackslash c\{c\}\}alo deve ser convertido em: Gonçalo. \\
+Também é pedido que os nomes de autores e editores sejam normalizados, todos têm que apresentar a mesma forma.
+A forma requisitada é a seguinte: "Apelido, N1. N2." em que N1 e N2 são possíveis nomes próprios e Apelido é,
+obviamente, o apelido(ou apelidos em alguns casos). Salienta-se que também é necessário que sejam todos da forma
+"author/editor = \{ ... \}", por isso casos que usem aspas ou o número errado de espaços também devem ser 
+corrigidos. Exemplo de normalização: \\
+author="Martini, Ricardo G. and Ara{\textbackslash’u}jo, Cristiana and Almeida, 
+Jos{\textbackslash’e} Jo{\textbackslash~a}o and Henriques, Pedro" \\
+Deve ficar: \\
+author = \{Martini, R. G. and Araújo, C. and Almeida, J. J. and Henriques, P.\}
+
+
+\section{Processador de Inglês corrente}
+
+\subsection{Descrição informal do problema}
+RTFCYGVHBJDNKAFIYADVFABONAODBANPDIN\par
+cgvhjkbsdnkgdmf\par
+adhv abfk asf\par
+ashdbasopdnaspdnsad
+
+\subsection{Especificação dos Requisitos}
+\subsubsection{Dados}
+aldnsapidnsa+odsad+safmapsnfsapfm\par
+fhgaj kbjlnkfadfm\par
+ajfvhabsojdnksadpsaadpin\par
+ahsgjdvhbasinfpafp\par
+asdafadfaa
+\subsubsection{Pedidos}
+xsaddsafafafasfa
 
 \chapter{Concepção/desenho da Resolução} \label{cd}
-\section{Estruturas de Dados}
+
+\section{Normalizador de Autores em BibTex}
+\subsection{Estruturas de Dados}
 y
-\section{Algoritmos}
+\subsection{Algoritmos}
+x
+
+\section{Processador de Inglês corrente}
+\subsection{Estruturas de Dados}
+y
+\subsection{Algoritmos}
 x
 
 \chapter{Codificação e Testes} \label{ct}
-\section{Alternativas, Decisões e Problemas de Implementação}
+
+\section{Normalizador de Autores em BibTex}
+
+\subsection{Alternativas, Decisões e Problemas de Implementação}
 xyz
 
-
-
-\section{Testes realizados e Resultados}
+\subsection{Testes realizados e Resultados}
 xyzzzz
 
-\subsection{O programa é executado com o ficheiro como argumento}
+\subsection{O programa é executado com ...}
 
-\includegraphics{in.png}
+%\includegraphics{}
 
 \subsection{Obtém-se o seguinte resultado}
 
+\section{Processador de Inglês corrente}
 
+\subsection{Alternativas, Decisões e Problemas de Implementação}
+xyz
+
+\subsection{Testes realizados e Resultados}
+xyzzzz
+
+\subsection{O programa é executado com ...}
+
+%\includegraphics{}
+
+\subsection{Obtém-se o seguinte resultado}
 
 \chapter{Conclusão} \label{concl}
 Espetacular
@@ -168,7 +233,7 @@ Espetacular
 
 Lista-se a seguir o código  do programa  que foi desenvolvido.
 
-\lstinputlisting{}%input de um ficheiro
+%\lstinputlisting{}%input de um ficheiro
 
 \bibliographystyle{alpha}
 \bibliography{relprojLayout}
