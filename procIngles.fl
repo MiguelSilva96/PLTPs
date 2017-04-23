@@ -30,6 +30,7 @@ NE          one|two|three|four|five|six|seven|eight|nine
 AU          [Dd]id[n't]?|[Dd]o[n't]?|[Dd]oes[n't]?
 Q           all|some|several|enough|numerous|few|another|same
 T           ([a-z]+[ijquv])|([a-z]+[rfz][fz])|([a-z]+(ing|ed|lly|[^s]s|es))
+NN          [Hh]e|[Ss]he|[Ii]t
 EXCEPT1     {OB}|{SU}|{A}|{O}|{N}+|{NE}([a-z]+)?|{Q}|{AV}|{Q}|{C}
 EXCEPT2     {CC}|{RP}|{DP}|{PP}|{IP}|{IPP}|{T}
 
@@ -43,7 +44,7 @@ EXCEPT2     {CC}|{RP}|{DP}|{PP}|{IP}|{IPP}|{T}
 
 'm                     { fprintf(Contracoes, " am"); }
 're                    { fprintf(Contracoes, " are"); }
-'s                     { fprintf(Contracoes, " is/has"); }
+{NN}/'s                 { fprintf(Contracoes, "%s is/has", yytext); }
 've                    { fprintf(Contracoes, " have"); }
 'll                    { fprintf(Contracoes, " will"); }
 'd                     { fprintf(Contracoes, " had/would"); }
@@ -110,7 +111,7 @@ shan't                 { fprintf(Contracoes, "shall not"); }
 
 }
 
-
+'s 	       { } 
 n[\']t         { }
 .|\n           { fprintf(Contracoes, "%s", yytext); }
 
