@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.4.21)  23 APR 2017 00:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.4.21)  23 APR 2017 19:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -513,7 +513,12 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [1] (./Relatório.toc)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [1] (./Relatório.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 4.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 4.
+)
 \tf@toc=\write3
 \openout3 = `Relatório.toc'.
 
@@ -541,11 +546,95 @@ Cap\'{\i }tulo 3.
 
 ] [6]
 Cap\'{\i }tulo 4.
+<Imagens/1stBib.png, id=34, 648.4225pt x 598.235pt>
+File: Imagens/1stBib.png Graphic file (type png)
+ <use Imagens/1stBib.png>
+Package pdftex.def Info: Imagens/1stBib.png used on input line 396.
+(pdftex.def)             Requested size: 324.21045pt x 299.11676pt.
+
+<Imagens/outbib1.png, id=35, 723.70375pt x 570.13pt>
+File: Imagens/outbib1.png Graphic file (type png)
+ <use Imagens/outbib1.png>
+Package pdftex.def Info: Imagens/outbib1.png used on input line 397.
+(pdftex.def)             Requested size: 361.85098pt x 285.0643pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 396--398
+
+ []
+
 [7
 
-]
+] [8 <./Imagens/1stBib.png> <./Imagens/outbib1.png>]
+<Imagens/outGraph1.png, id=42, 1192.455pt x 621.32124pt>
+File: Imagens/outGraph1.png Graphic file (type png)
+
+<use Imagens/outGraph1.png>
+Package pdftex.def Info: Imagens/outGraph1.png used on input line 401.
+(pdftex.def)             Requested size: 476.97356pt x 248.5241pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 401--402
+
+ []
+
+<Imagens/outbib2.png, id=43, 608.2725pt x 620.3175pt>
+File: Imagens/outbib2.png Graphic file (type png)
+
+<use Imagens/outbib2.png>
+Package pdftex.def Info: Imagens/outbib2.png used on input line 407.
+(pdftex.def)             Requested size: 304.13551pt x 310.15799pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 407--408
+
+ []
+
+[9 <./Imagens/outGraph1.png>]
+<Imagens/outgraph2.png, id=47, 898.35625pt x 435.6275pt>
+File: Imagens/outgraph2.png Graphic file (type png)
+
+<use Imagens/outgraph2.png>
+Package pdftex.def Info: Imagens/outgraph2.png used on input line 411.
+(pdftex.def)             Requested size: 359.33614pt x 174.24791pt.
+ [10 <./Imagens/outbib2.png> <./Imagens/outgraph2.png>] <Imagens/beforeClick1.p
+ng, id=51, 1370.11874pt x 660.4675pt>
+File: Imagens/beforeClick1.png Graphic file (type png)
+
+<use Imagens/beforeClick1.png>
+Package pdftex.def Info: Imagens/beforeClick1.png used on input line 440.
+(pdftex.def)             Requested size: 479.54875pt x 231.16708pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 440--441
+
+ []
+
+<Imagens/afterClick1.png, id=52, 882.29625pt x 634.37pt>
+File: Imagens/afterClick1.png Graphic file (type png)
+
+<use Imagens/afterClick1.png>
+Package pdftex.def Info: Imagens/afterClick1.png used on input line 442.
+(pdftex.def)             Requested size: 308.80832pt x 222.03282pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 442--443
+
+ []
+
+[11 <./Imagens/beforeClick1.png>]
+<Imagens/afterClick2.png, id=57, 976.64874pt x 642.4pt>
+File: Imagens/afterClick2.png Graphic file (type png)
+
+<use Imagens/afterClick2.png>
+Package pdftex.def Info: Imagens/afterClick2.png used on input line 448.
+(pdftex.def)             Requested size: 341.83218pt x 224.84337pt.
+
+<Imagens/pesquisa.png, id=58, 996.72375pt x 699.61375pt>
+File: Imagens/pesquisa.png Graphic file (type png)
+
+<use Imagens/pesquisa.png>
+Package pdftex.def Info: Imagens/pesquisa.png used on input line 452.
+(pdftex.def)             Requested size: 448.52155pt x 314.82327pt.
+ [12 <./Imagens/afterClick1.png> <./Imagens/afterClick2.png>] [13 <./Imagens/pe
+squisa.png>]
 Cap\'{\i }tulo 5.
-[8
+[14
 
 ]
 Ap\^endice A.
@@ -555,49 +644,45 @@ File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
 (Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 32.
 )
-[9
+[15
 
 ] (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 ) (../normNomes.fl
-[10] [11]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
+[16] [17]) (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 )
-(../genGraph.fl [12] [13]) [14]
+(../genGraph.fl [18] [19]) [20]
 Ap\^endice B.
 (/usr/share/texlive/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2015/12/03 v1.1r UTF-8 support for inputenc
 ) (../procIngles.fl
-[15
+[21
 
-] [16] [17])
+] [22] [23])
 No file Relatório.bbl.
-[18] (./Relatório.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+[24] (./Relatório.aux) ) 
 Here is how much of TeX's memory you used:
- 4717 strings out of 494929
- 60451 string characters out of 6180142
+ 4776 strings out of 494929
+ 61610 string characters out of 6180142
  215761 words of memory out of 5000000
- 7932 multiletter control sequences out of 15000+600000
+ 7980 multiletter control sequences out of 15000+600000
  10831 words of font info for 39 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
  38i,7n,49p,252b,2073s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmtt9.pfb>
-Output written on Relatório.pdf (20 pages, 158840 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmit
+t10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on Relatório.pdf (26 pages, 575414 bytes).
 PDF statistics:
- 105 PDF objects out of 1000 (max. 8388607)
- 73 compressed objects within 1 object stream
+ 133 PDF objects out of 1000 (max. 8388607)
+ 86 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

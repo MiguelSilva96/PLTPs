@@ -109,12 +109,12 @@ Processamento de Linguagens\\(3º ano de Curso)\\
 
 \begin{abstract}
 Documentação do segundo trabalho prático da unidade curricular de 
-"Processamento de Linguagens", o principal foco incide em utilizar 
+"Processamento de Linguagens". O principal foco incide em utilizar 
 o analisador léxico FLEX, para desenvolver processadores de texto. 
 Simplifica o trabalho que seria necessário utilizando diretamente a 
 linguagem de programação C, facilitando o processo. 
 Demonstrando e documentando as soluções propostas pelo grupo de 
-trabalho para os doius problemas escolhidos, termina-se o relatório 
+trabalho para os dois problemas escolhidos, termina-se o relatório 
 com uma análise argumentativa sobre a eficiência dessas mesmas soluções. 
 \end{abstract}
 
@@ -207,7 +207,9 @@ de espaços também devem ser corrigidos. Exemplo de normalização: \\
 author="Martini, Ricardo G. and Ara{\textbackslash’u}jo, Cristiana and Almeida, 
 Jos{\textbackslash’e} Jo{\textbackslash~a}o and Henriques, Pedro" \\
 Deve ficar: \\
-author = \{Martini, R. G. and Araújo, C. and Almeida, J. J. and Henriques, P.\}
+author = \{Martini, R. G. and Araújo, C. and Almeida, J. J. and Henriques, P.\}\par
+Por fim, é solicitado que se use a linguagem Dotty e o processador dot para criar 
+um grafo com todos os autores que colaboram com um dado autor.
 
 
 \section{Processador de Inglês corrente}
@@ -252,9 +254,49 @@ Aqui também, tal como nos anteriores exemplos, as formas negativas.
 
 \section{Normalizador de Autores em BibTex}
 \subsection{Estruturas de Dados}
-y
+Depois do levantamento de requisitos, chegou-se à conclusão que para o primeiro não 
+seria necessário guardar em memória nenhum tipo de dados, bastando substituir os 
+caracteres encontrados. 
+
+Já no segundo requisito, dada a ordem que os nomes aparecem, é necessário guardar 
+os nomes próprios (num array de char*) de forma a enviar para o
+ficheiro de output apenas quando for encontrado o apelido. 
+
+Quanto à criação do grafo, é necessário, mais uma vez, um array de char*. Desta vez 
+o objetivo é guardar os nomes que já apareceram na mesma tag de author/editor de 
+forma a associar todos aos nomes novos que estão na mesma linha e são descobertos.
+
 \subsection{Algoritmos}
-x
+Seguindo a abordagem anterior, os algoritmos serão descritos requisito por requisito.
+No caso dos acentos explícitos, não existe nenhum algoritmo complexo para resolver
+o problema, pois neste caso é apenas necessário substituir sequências de caracteres 
+que aparecem por um caracter português correspondente. (Ficheiro convAcentos, apêndice A)\par
+
+Para efetuar a normalização dos nomes é mais complexo, pois os nomes podem aparecer 
+em várias formas e é necessário que sejam todos apresentados da mesma forma. 
+A primeira fase passa por encontrar todos os fields com "author=" e "editor=", caso 
+sejam utilizadas aspas é necessário trocar por chavetas. Todos os restantes fields são 
+imprimidos como estão.
+É também essencial(apenas quando estamos perante um dos fields pretendidos) encontrar 
+todos os nomes próprios e guardar cada um deles na estrutura de dados já referida. 
+O objetivo desta última abordagem é encontrar o
+apelido logo depois e imprimir com todos os nomes próprios encontrados.
+
+Embora a maioria dos casos funcionem com o que foi descrito, existem casos em que a situação
+é diferente. Esses casos aparecem numa forma intermédia entre estes descritos e a forma
+pretendida. Apresentam-se com os apelidos já divididos dos nomes próprios, mas ainda com os 
+nomes próprios na forma completa. 
+Nestes casos, são selecionados todos os nomes próprios e apelidos na mesma expressão regular 
+para depois ser tratada a informação obtendo a forma final que é solicitada.\par
+
+Finalmente, temos o caso da criação do grafo. Para criar o grafo será utilizado o ficheiro de output
+dos requisitos anteriores de forma a facilitar o tratamento dos nomes(justificação em mais detalhe 
+no próximo capítulo). É importante criar uma função de divisão de strings por palavra, pois neste caso é 
+necessário dividir os nomes por " and ". O uso desta função será similar ao da função strtok da 
+biblioteca string.h. 
+Com esta função torna-se fácil o processo, bastando encontrar todos os nomes separados por " and " 
+ou então sozinhos quando há só um. 
+Depois basta imprimir os nomes na forma necessária seguindo a sintaxe Dot para um ficheiro.
 
 \section{Processador de Inglês corrente}
 \subsection{Estruturas de Dados}
@@ -325,16 +367,49 @@ excluindo os repetidos.
 \section{Normalizador de Autores em BibTex}
 
 \subsection{Alternativas, Decisões e Problemas de Implementação}
-xyz
+De forma a facilitar o procedimento, foi decidido que existiriam 3 programas para 
+solucionar o problema. Assim, existe o programa que resolve os acentos explícitos
+(convAcentos.fl), o programa que normaliza os nomes dado o ficheiro de output de 
+convAcentos(normNomes.fl) e ainda o programa que gera o grafo dado o ficheiro de output 
+de normNomes. Uma alternativa seria fazer tudo no mesmo programa, mas isso dificultaria 
+o processo porque os nomes não estariam todos na mesma forma para o grafo, e os matches 
+de acentos entrariam em conflito com os matches de nomes. Para toda esta execução existe 
+um Makefile para facilitar.
+Quanto ao grafo gerado foi utilizado um grafo não orientado de forma a respresentar 
+as relações entre autores que colaboraram.\par
+Um dos problemas de implementação foi a necessidade de implementar a função multi\_tok
+(no ficheiro genGraph, linhas 62 a 82) com o objetivo de separar string por uma dada 
+palavra, utilização similar a strtok. 
+Outro problema durante a implementação foi o facto dos nomes aparecerem em diversas formas, 
+este foi resolvido seguindo o procedimento descrito no capítulo anterior, mas houve ainda o 
+cuidado com alguns nomes que têm "de, dos, da", que era ignorado. Foi também necessário ter 
+um cuidado adicional com nomes que começam com letra acentuada, pois neste caso ocupa mais do 
+que um char normal. A resolução destes casos foi feita através de verificação do 
+código ASCII dessas mesmas letras.
 
 \subsection{Testes realizados e Resultados}
-xyzzzz
 
-\subsection{O programa é executado com ...}
+\subsection{Execução para o ficheiro dado no enunciado(exemplo-utf8.bib)}
 
-%\includegraphics{}
+\subsubsection{Excertos do ficheiro gerado}
 
-\subsection{Obtém-se o seguinte resultado}
+\includegraphics[scale=0.50]{Imagens/1stBib.png} \\
+\includegraphics[scale=0.50]{Imagens/outbib1.png} \\
+
+\subsubsection{Parte do grafo gerado}
+
+\includegraphics[scale=0.40]{Imagens/outGraph1.png} \\
+
+\subsection{Execução para um ficheiro obtido pelo grupo de trabalho(listb.bib)}
+
+\subsubsection{Excertos do ficheiro gerado}
+
+\includegraphics[scale=0.50]{Imagens/outbib2.png} \\
+
+\subsubsection{Parte do grafo gerado}
+
+\includegraphics[scale=0.40]{Imagens/outgraph2.png}
+
 
 \section{Processador de Inglês corrente}
 
@@ -357,16 +432,50 @@ exceções poderia levar igualmente à supressão de verbos
 que estariam correctos a ser apresentados no ficheiro de output.
 
 \subsection{Testes realizados e Resultados}
-xyzzzz
 
-\subsection{O programa é executado com ...}
+\subsection{Execução para ficheiro dado no enunciado(FAQ-Phyton-EN.txt)}
 
-%\includegraphics{}
+\subsubsection{Html obtido}
+\subsubsection{Lista antes de escolher letra} 
+\includegraphics[scale=0.35]{Imagens/beforeClick1.png} \\
+\subsubsection{Lista depois de escolher letra} 
+\includegraphics[scale=0.35]{Imagens/afterClick1.png} \\
 
-\subsection{Obtém-se o seguinte resultado}
+\subsection{Execução para um ficheiro obtido pelo grupo(potter.txt)}
+
+\subsubsection{Html obtido}
+
+\includegraphics[scale=0.35]{Imagens/afterClick2.png}
+
+\subsubsection{Clicando na lupa de pesquisa para get}
+
+\includegraphics[scale=0.45]{Imagens/pesquisa.png}
+
+
+
 
 \chapter{Conclusão} \label{concl}
-Espetacular
+Neste projeto foi possível atingir os objetivos propostos, relativos à criação de 
+um Normalizador de Autores em BibTex, utilizando Expressões Regulares para a definição de padrões,
+desenvolvendo Processadores de Linguagens Regulares para a filtragem e transformação de textos e 
+recorrendo ao Analisador Léxico FLex para gerar filtros de texto em C.\par
+
+Com a criação de tal Normalizador foi possível a partir de publicações, normalizar e reescrever
+acentos em caracteres portuguese assim como os campos relativos aos editores e editores de modo
+a serem reescritos de acordo com uma estrutura especifica. Após a normalização das publicações seria
+gerado um grafo com todos os autores e ligações de colaboração entre eles, utilizando a linguagem Dotty
+e processador dot para tal criação assim como o uso de expressões regulares e analisadores léxicos para
+a criação do ficheiro de input do processador dot.\par
+
+Para além da criação deste Normalizador de Autores também foi possível a realização de um Processador
+de Inglês corrente, no qual seria possível a expansão de contrações da língua inglesa a partir de um dado 
+texto e gerar um ficheiro html com uma lista ordenada de todos os verbos ingleses no infinitivo 
+presentes no texto.\par
+
+Com estes dois projetos foi possível estabelecer padrões de frases nos textos utilizados
+através de Expressões Regulares assim como identificar as ações semânticas relativas aos padrões de frases
+estabelecidos. Com o estabelecimento destes padrões foi possível a criação de um Filtro de Texto 
+capaz de os reconhecer e , recorrendo ao Gerador Flex, transformar os textos de acordo com os requisitos.
 
 
 \appendix

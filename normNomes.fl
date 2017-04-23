@@ -102,7 +102,7 @@ N       (da|dos|de)[\ ]
     /* Print dos 'and' */
 [\ \n\r]and[\ \n\r] { fprintf(output, " and "); }
 
-    /* Tratar casos de nomes do tipo: X. X. YYYY */
+    /* Tratar casos de nomes do tipo: YYYY, XXXX XXXX */
 ({LM}{L}+[\ ]?)+[\,][\ ]*{LM}{L}+([\ ]+{LM}{L}+)* {
     if(!otherTag) {
         token = strtok(yytext, ",");

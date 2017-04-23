@@ -15,40 +15,40 @@ NAME    {N}?({LM}{L}+)+([\,][\ ]({LM}[\.])+)?
 
 %%
 
-	FILE *output  = fopen("Graph/graph.dot", "w");
-	char **names, *token;
-	char format[64] = "\"%s\" -- \"%s\"\n";
-	int flag = 0, i, j;
-	int start = 1;
-	names = (char **) malloc(sizeof(char *) * 20);
+    FILE *output  = fopen("Graph/graph.dot", "w");
+    char **names, *token;
+    char format[64] = "\"%s\" -- \"%s\"\n";
+    int flag = 0, i, j;
+    int start = 1;
+    names = (char **) malloc(sizeof(char *) * 20);
 
-(author|editor) { flag = 1; }
+author { flag = 1; }
 
 {NAME}([\ ]+and[\ ]+{NAME})* {
-	if(start) {
-		fprintf(output, "strict graph G{\n");
-		fprintf(output, "ranksep=\"1.0 equally\"\n");
-		fprintf(output, "bgcolor=lightsteelblue4;\n");
-		fprintf(output, "edge [color=grey94];\n");
-		fprintf(output, "node [shape=box,style=filled,color=grey];\n");
-		start = 0;
-	}
+    if(start) {
+        fprintf(output, "strict graph G{\n");
+        fprintf(output, "ranksep=\"1.0 equally\"\n");
+        fprintf(output, "bgcolor=lightsteelblue4;\n");
+        fprintf(output, "edge [color=grey94];\n");
+        fprintf(output, "node [shape=box,style=filled,color=grey];\n");
+        start = 0;
+    }
 
-	if(flag) {
-		i = 0;
-		token = multi_tok(yytext, " and ");
-		names[i++] = strdup(token);
-		token = multi_tok(NULL, " and ");
-		while(token) {
-			j = 0;
-			while(j < i)
-				fprintf(output, format, names[j++], token);
-			names[i++] = strdup(token);
-			token = multi_tok(NULL, " and ");
-		}
-	}
+    if(flag) {
+        i = 0;
+        token = multi_tok(yytext, " and ");
+        names[i++] = strdup(token);
+        token = multi_tok(NULL, " and ");
+        while(token) {
+            j = 0;
+            while(j < i)
+                fprintf(output, format, names[j++], token);
+            names[i++] = strdup(token);
+            token = multi_tok(NULL, " and ");
+        }
+    }
 
-	flag = 0;
+    flag = 0;
 
 }
 
