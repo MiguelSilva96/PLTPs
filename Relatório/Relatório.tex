@@ -17,7 +17,7 @@
 \usepackage{eurosym}
 %LISTING - GENERAL
 \lstset{
-    language=Awk,
+    language=C,
     basicstyle=\ttfamily\small,
     numberstyle=\footnotesize,
     numbers=left,
@@ -35,10 +35,12 @@
     showstringspaces=false,
     literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
     {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {À}{{\`A}}1 {È}{{\`E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {Ã}{{\~A}}1 {Ẽ}{{\~E}}1 {Ĩ}{{\~I}}1 {Õ}{{\~O}}1 {Ũ}{{\~U}}1
     {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
     {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
     {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
-    {ã}{{\~a}}1 {º}{{\textsuperscript{o}}}1 {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {ã}{{\~a}}1 {õ}{{\~o}}1 {º}{{\textsuperscript{o}}}1 {ç}{{\c c}}1 {Ç}{{\c C}}1
     {€}{{\euro}}1
 }
 
@@ -106,57 +108,102 @@ Processamento de Linguagens\\(3º ano de Curso)\\
 \maketitle
 
 \begin{abstract}
-Documentação do segundo trabalho prático da unidade curricular de "Processamento de Linguagens", o principal foco incide em utilizar o analisador léxico FLEX, para desenvolver processadores de texto. 
-Simplifica o trabalho que seria necessário utilizando diretamente a linguagem de programação C, facilitando o processo. 
-Demonstrando e documentando as soluções propostas pelo grupo de trabalho para os doius problemas escolhidos, termina-se o relatório com uma análise argumentativa sobre a eficiência dessas mesmas soluções. 
+Documentação do segundo trabalho prático da unidade curricular de 
+"Processamento de Linguagens", o principal foco incide em utilizar 
+o analisador léxico FLEX, para desenvolver processadores de texto. 
+Simplifica o trabalho que seria necessário utilizando diretamente a 
+linguagem de programação C, facilitando o processo. 
+Demonstrando e documentando as soluções propostas pelo grupo de 
+trabalho para os doius problemas escolhidos, termina-se o relatório 
+com uma análise argumentativa sobre a eficiência dessas mesmas soluções. 
 \end{abstract}
 
 \tableofcontents
 
 
 \chapter{Introdução} \label{intro}
-Tal e qual como foi descrito no anterior trabalho prático, os últimos anos trouxeram consigo a inevitabilidade de processar cada vez mais texto. Extrair e editar determinadas linhas, onde certos padrões são bastante evidentes, tornou-se assim algo fundamental. Justificam-se assim as várias ferramentas criadas para o efeito, dentro das quais se destaca o FLEX. Assumindo-se como um programa capaz de gerar analisadores lexicais, juntamente com o uso de expressões regulares e as funcionalidades disponibilizadas pela linguagem de programação C, a utilização do FLEX permite a resolução dos vários problemas relacionados com o que anteriormente foi descrito.
+Tal e qual como foi descrito no anterior trabalho prático, os últimos 
+anos trouxeram consigo a inevitabilidade de processar cada vez mais texto. 
+Extrair e editar determinadas linhas, onde certos padrões são bastante 
+evidentes, tornou-se assim algo fundamental. Justificam-se assim as várias 
+ferramentas criadas para o efeito, dentro das quais se destaca o FLEX. 
+Assumindo-se como um programa capaz de gerar analisadores lexicais, 
+juntamente com o uso de expressões regulares e as funcionalidades 
+disponibilizadas pela linguagem de programação C, a utilização do 
+FLEX permite a resolução dos vários problemas relacionados com o que 
+anteriormente foi descrito.
 
 
-Neste segundo trabalho prático da unidade curricular de "Processamento de Linguagens", através dos meios descritos anteriormente,
-vão ser realizados dois filtros de texto capazes de processar algumas das características da língua inglesa e de normalizar certos componentes de um ficheiro no formato BibTex. Para além disso, são realizados alguns extras como, por exemplo, a criação de um grafo representativo das ligações entre diversos autores e um página HTML onde são apresentados os diversos verbos no infinitivo não flexionado resultantes do processamento de um texto em inglês.
-
+Neste segundo trabalho prático da unidade curricular de 
+"Processamento de Linguagens", através dos meios descritos 
+anteriormente, vão ser realizados dois filtros de texto capazes 
+de processar algumas das características da língua inglesa e de 
+normalizar certos componentes de um ficheiro no formato BibTex. 
+Para além disso, são realizados alguns extras como, por exemplo, 
+a criação de um grafo representativo das ligações entre diversos 
+autores e um página HTML onde são apresentados os diversos verbos 
+no infinitivo não flexionado resultantes do processamento de um 
+texto em inglês.
 
 
 \section*{Estrutura do Relatório}
-No capítulo 1 faz-se uma pequena introdução ao problema e às ferramentas utilizadas para a resolução deste. Para além disso, é descrita de uma forma breve a estrutura do relatório.\par
-No capítulo 2 faz-se uma análise breve mas mais detalhada do problema escolhido pelo grupo de trabalho.\par
-No capítulo 3 é descrito de uma forma sumarizada o procedimento utilizado para solucionar as várias questões propostas pelos enunciados.\par
-No capítulo 4 são apresentados alguns testes e respetivos resultados para comprovar o respectivo funcionamento das soluções apresentadas.\par
-Finalmente, no capítulo 5 termina-se o relatório com uma síntese do que foi dito, as conclusões e o trabalho futuro.
+No capítulo 1 faz-se uma pequena introdução ao problema e às ferramentas 
+utilizadas para a resolução deste. Para além disso, é descrita de uma 
+forma breve a estrutura do relatório.\par
+No capítulo 2 faz-se uma análise breve mas mais detalhada do problema 
+escolhido pelo grupo de trabalho.\par
+No capítulo 3 é descrito de uma forma sumarizada o procedimento utilizado 
+para solucionar as várias questões propostas pelos enunciados.\par
+No capítulo 4 são apresentados alguns testes e respetivos resultados 
+para comprovar o respectivo funcionamento das soluções apresentadas.\par
+Finalmente, no capítulo 5 termina-se o relatório com uma síntese do 
+que foi dito, as conclusões e o trabalho futuro.
 
 \chapter{Análise e Especificação} \label{ae}
 
 \section{Normalizador de Autores em BibTex}
 
 \subsection{Descrição informal do problema}
-É fornecido um ficheiro em BibTex(como input), com várias entradas e diversos autores e editores por entrada.
-Pretende-se que se desenvolva um "Normalizador" para ler esse mesmo ficheiro e gerar um ficheiro equivalente
-(em BibTex)com os nomes de todos os editores e autores normalizados. Também se pretende converter todos os carateres com acentos explícitos em caracteres portugueses.
-A forma de normalização dos nomes e dos acentos explícitos é apresentada em detalhe a baixo, na Especificação dos Requisitos.
+É fornecido um ficheiro em BibTex(como input), com várias entradas e 
+diversos autores e editores por entrada.
+Pretende-se que se desenvolva um "Normalizador" para ler esse mesmo 
+ficheiro e gerar um ficheiro equivalente
+(em BibTex)com os nomes de todos os editores e autores normalizados. 
+Também se pretende converter todos os carateres com acentos explícitos 
+em caracteres portugueses.
+A forma de normalização dos nomes e dos acentos explícitos é apresentada 
+em detalhe a baixo, na Especificação dos Requisitos.
+
 \subsection{Especificação dos Requisitos}
+
 \subsubsection{Dados}
-Como já foi referido, é fornecido um ficheiro em BibTex com várias entradas e diversos autores e editores por entrada. Este ficheiro contém, em cada entrada, diversos fields que poderão ou não incluir os fields author e editor. Podem existir
+Como já foi referido, é fornecido um ficheiro em BibTex com várias entradas 
+e diversos autores e editores por entrada. Este ficheiro contém, em 
+cada entrada, diversos fields que poderão ou não incluir os fields author 
+e editor. Podem existir
 diversos tipos de entrada, com número e tipos diferentes de fields.\par
-Cada field pode ocupar uma ou mais linhas, dependendo da informação que o mesmo representa. Na maioria dos casos de editor
-e author ocupa apenas uma, mas não é regra. Quando existem muitos autores e/ou editores é normal que sejam
-necessárias mais linhas. Podem também existir acentos explícitos em qualquer field que tenha texto, incluindo nos nomes
-de editores e autores.
+Cada field pode ocupar uma ou mais linhas, dependendo da informação que 
+o mesmo representa. Na maioria dos casos de editor
+e author ocupa apenas uma, mas não é regra. Quando existem muitos 
+autores e/ou editores é normal que sejam necessárias mais linhas. 
+Podem também existir acentos explícitos em qualquer field que tenha 
+texto, incluindo nos nomes de editores e autores.
+
 \subsubsection{Pedidos}
-Como primeiro requisito, é pedido que todos os acentos explícitos(e cedilhas) sejam convertidos para caracteres portugueses,
- exemplos:\par
-Anast\textbackslash'acia ou Anast\{\textbackslash'a\}cia deve ser convertido em: Anastácia. \\
-Gon\textbackslash c\{c\}alo ou Gon\{\textbackslash c\{c\}\}alo deve ser convertido em: Gonçalo. \\
-Também é pedido que os nomes de autores e editores sejam normalizados, todos têm que apresentar a mesma forma.
-A forma requisitada é a seguinte: "Apelido, N1. N2." em que N1 e N2 são possíveis nomes próprios e Apelido é,
-obviamente, o apelido(ou apelidos em alguns casos). Salienta-se que também é necessário que sejam todos da forma
-"author/editor = \{ ... \}", por isso casos que usem aspas ou o número errado de espaços também devem ser 
-corrigidos. Exemplo de normalização: \\
+Como primeiro requisito, é pedido que todos os acentos explícitos(e cedilhas) 
+sejam convertidos para caracteres portugueses, exemplos:\par
+Anast\textbackslash'acia ou Anast\{\textbackslash'a\}cia deve ser convertido 
+em: Anastácia. \\
+Gon\textbackslash c\{c\}alo ou Gon\{\textbackslash c\{c\}\}alo deve ser 
+convertido em: Gonçalo. \\
+Também é pedido que os nomes de autores e editores sejam normalizados, 
+todos têm que apresentar a mesma forma.
+A forma requisitada é a seguinte: "Apelido, N1. N2." em que N1 e N2 são 
+possíveis nomes próprios e Apelido é, obviamente, o apelido(ou apelidos 
+em alguns casos). Salienta-se que também é 
+necessário que sejam todos da forma
+"author/editor = \{ ... \}", por isso casos que usem aspas ou o número errado 
+de espaços também devem ser corrigidos. Exemplo de normalização: \\
 author="Martini, Ricardo G. and Ara{\textbackslash’u}jo, Cristiana and Almeida, 
 Jos{\textbackslash’e} Jo{\textbackslash~a}o and Henriques, Pedro" \\
 Deve ficar: \\
@@ -164,22 +211,41 @@ author = \{Martini, R. G. and Araújo, C. and Almeida, J. J. and Henriques, P.\}
 
 
 \section{Processador de Inglês corrente}
-O problema proposto pela equipa docente divide-se em duas partes. É fornecido um ficheiro exemplo contendo texto, em inglês, com vários exemplos das multiplas contrações caracteristicas desta lingua e com vários verbos numa determinada forma nominal. 
+O problema proposto pela equipa docente divide-se em duas partes. É fornecido um 
+ficheiro exemplo contendo texto, em inglês, com vários exemplos das multiplas 
+contrações caracteristicas desta lingua e com vários verbos numa determinada f
+orma nominal. 
 
-Numa primeira parte, pretende-se que se desenvolva um "Normalizador" capaz de gerar um ficheiro equivalente, mas que modifique as várias contrações existentes na gramática inglesa na sua forma normal. Numa segunda parte pretende-se gerar um ficheiro, em formato HTML, que possua todas as ocorrências de verbos no infinitivo não lexionado presentes no ficheiro de input. 
+Numa primeira parte, pretende-se que se desenvolva um "Normalizador" capaz 
+de gerar um ficheiro equivalente, mas que modifique as várias contrações 
+existentes na gramática inglesa na sua forma normal. Numa segunda parte 
+pretende-se gerar um ficheiro, em formato HTML, que possua todas as 
+ocorrências de verbos no infinitivo não lexionado presentes no ficheiro 
+de input. 
 
 \subsection{Especificação dos Requisitos}
 \subsubsection{Dados}
-O ficheiro fornecido para a execução das duas etapas, descritas anteriormente, apresenta um formato comum. O programa deve estar preparado para lidar com qualquer tipo de ficheiro, seja ele no formato BibTex, html, ou qualquer outro. As várias contrações podem estar definidas tanto na forma negativa como positiva e encontrar-se em qualquer zona do ficheiro. À semelhança, os verbos e os padrões que os acompanham estão sujeitos às mesmas características.
+O ficheiro fornecido para a execução das duas etapas, descritas anteriormente, 
+apresenta um formato comum. O programa deve estar preparado para lidar com 
+qualquer tipo de ficheiro, seja ele no formato BibTex, html, ou qualquer outro. 
+As várias contrações podem estar definidas tanto na forma negativa como positiva e 
+encontrar-se em qualquer zona do ficheiro. À semelhança, os verbos e os padrões 
+que os acompanham estão sujeitos às mesmas características.
 
 \subsubsection{Pedidos}
-Como primeiro requisito, é pedido que as contrações sejam convertidos para a sua forma normal. Os casos não são uniformes como podemos ver pelos seguintes exemplos:\par
+Como primeiro requisito, é pedido que as contrações sejam convertidos para a 
+sua forma normal. Os casos não são uniformes como podemos ver pelos seguintes exemplos:\par
 I'm - I am\par
 W're - We are\par
-Como segundo requisito, é pedido que sejam retirados, para um ficheiro diferente, todos os verbos no infinitivo não lexionado. Aqui, são três os padrões conhecidos:\par
+Como segundo requisito, é pedido que sejam retirados, para um ficheiro diferente, 
+todos os verbos no infinitivo não lexionado. Aqui, são três os padrões conhecidos:\par
 - "To accumulate.". A forma verbal é precedida pela forma "to".\par
-- "I might go". A forma verbal é antecedido por can, could, shall, should, will, would, may, might, bem como as suas formas negativas.\par
-- "Do you want to go?". Na forma interrogativa o verbo é precedido por 'do,does,did,can,could,shall, should, will, would, may, might + qualquer outra palavra'. Aqui também, tal como nos anteriores exemplos, as formas negativas.
+- "I might go". A forma verbal é antecedido por can, could, shall, should, will, 
+would, may, might, 
+bem como as suas formas negativas.\par
+- "Do you want to go?". Na forma interrogativa o verbo é precedido por 'do,does,
+did,can,could,shall, should, will, would, may, might + qualquer outra palavra'. 
+Aqui também, tal como nos anteriores exemplos, as formas negativas.
 
 
 \chapter{Concepção/desenho da Resolução} \label{cd}
@@ -192,22 +258,67 @@ x
 
 \section{Processador de Inglês corrente}
 \subsection{Estruturas de Dados}
-Pensando nos requisitos para este projeto é fácil de perceber que as duas partes do trabalho prático vão ter abordagens distintas, no que diz respeito às estruturas de dados. Na primeira parte, onde queremos como output um ficheiro semelhante àquele que recebemos como input, não precisamos de qualquer estrutura de dados auxiliar já que as funcionalidades do flex, da linguagem c e das expressões regulares nos permitem fazer face ao problema.
+Pensando nos requisitos para este projeto é fácil de perceber que as duas partes do 
+trabalho prático vão ter abordagens distintas, no que diz respeito às estruturas 
+de dados. Na primeira parte, onde queremos como output um ficheiro semelhante 
+àquele que recebemos como input, não precisamos de qualquer estrutura de dados 
+auxiliar já que as funcionalidades do flex, da linguagem c e das expressões 
+regulares nos permitem fazer face ao problema.
 
-Por outro lado, no que diz respeito à passagem dos verbos no infinitivo não lexionado para um ficheiro output sem qualquer semelhança ao de input, é necessária uma estrutura de dados. Tal e qual como nas aulas práticas da unidade curricular, fizemos uso da libraria GLIB. Para o efeito, escolhemos a implementação de listas ligadas disponibilizada por esta libraria. Os factores que mais pesaram na escolha da estrutura de dados foram o facto de pudermos inserir uma quantidade indeterminada de itens  e a disponibilização de uma função de inserção ordenada. 
+Por outro lado, no que diz respeito à passagem dos verbos no infinitivo não 
+lexionado para um ficheiro output sem qualquer semelhança ao de input, 
+é necessária uma estrutura de dados. Tal e qual como nas aulas práticas 
+da unidade curricular, fizemos uso da biblioteca GLIB. Para o efeito, 
+escolhemos a implementação de listas ligadas disponibilizada por esta biblioteca. 
+Os factores que mais pesaram na escolha da estrutura de dados foram o facto de 
+pudermos inserir uma quantidade indeterminada de itens e a disponibilização 
+de uma função de inserção ordenada. 
 
-Ao longo da resolução do problema por vezes foi necessário apenas retirar uma certa parte de texto, do total daquilo que é adquirido através do uso de uma certa expressão regular. Assim, foi necessário utilizar a função strtok. Por consequência,  definimos um array e uma string capazes de guardar informação temporária e de auxiliar a função descrita anteriormente. Finalmente, foi utilizada uma string para que a impressão de verbos repetidos não se realizasse. 
+Ao longo da resolução do problema por vezes foi necessário apenas retirar 
+uma certa parte de texto, do total daquilo que é adquirido através do uso 
+de uma certa expressão regular. Assim, foi necessário utilizar a função 
+strtok. Por consequência,  definimos um array e uma string capazes de 
+guardar informação temporária e de auxiliar a função descrita anteriormente. 
+Finalmente, foi utilizada uma string para que a impressão de verbos 
+repetidos não se realizasse. 
 
 \subsection{Algoritmos}
-No que diz respeito à primeira parte do exercício prático, respeitante às contrações gramaticais, três abordagens distintas tiveram que ser realizadas. Numa primeira abordagem, respeitante por exemplo à contração "I'm", a expressão regular utilizada faz matching apenas com o " ' " e tudo o que lhe sucede, já que são os únicos elementos que devem ser alterados por a expressão correspondente. Tudo o que antecede, permanece na mesma. O mesmo acontece para algumas das formas negativas como, por exemplo, "Don't". No que diz respeito a contrações como "Won't" ou "Can't", não existe um padrão especifico e por isso a expressão regular que faz matching deve ser alterada na sua totalidade.
+No que diz respeito à primeira parte do exercício prático, respeitante 
+às contrações gramaticais, três abordagens distintas tiveram que ser realizadas. 
+Numa primeira abordagem, respeitante por exemplo à contração "I'm", a 
+expressão regular utilizada faz matching apenas com o " ' " e tudo o que lhe sucede, 
+já que são os únicos elementos que devem ser alterados por a expressão correspondente. 
+Tudo o que antecede, permanece na mesma. O mesmo acontece para algumas das 
+formas negativas como, por exemplo, "Don't". No que diz respeito a contrações como 
+"Won't" ou "Can't", não existe um padrão especifico e por isso a expressão regular 
+que faz matching deve ser alterada na sua totalidade.
 
-Por outro lado, no que diz respeito à segunda parte do exercício prático, o nível de complexidade aumenta. Quando o verbo no infinitivo é precedido por "to", a expressão regular deve fazer matching com o  "to", seguido de um espaço, e finalmente seguido do verbo que desejamos. Assim, na altura de guardar o verbo na estrutura de dados devemos redirecionar o apontador três caracteres à frente de modo a que a palavra "to" e o consequente espaço não sejam guardados. 
-Quando o verbo no infinitivo é precedido por "can/could...", a expressão regular é semelhante à descrita anteriormente. Mas se no caso anterior era sempre conhecido o tamanho da palavra que precede o verbo, neste caso em concreto, não. Assim, é necessário utilizar a função strtok de modo a dividir as palavras que fizeram matching por espaços. Feito isto, os passos são semelhantes aos anteriores, com o verbo a ser inserido na estrutura de dados.
-Finalmente, quando estamos perante uma forma interrogativa, ao contrário dos dois casos anteriores, o verbo vai encontrar-se com maior probabilidade na segunda palavra que sucede às expressões "do/did/does". O procedimento é então bastante semelhante ao caso anterior. 
+Por outro lado, no que diz respeito à segunda parte do exercício prático, o 
+nível de complexidade aumenta. Quando o verbo no infinitivo é 
+precedido por "to", a expressão regular deve fazer matching com o  "to", 
+seguido de um espaço, e finalmente seguido do verbo que desejamos. 
+Assim, na altura de guardar o verbo na estrutura de dados devemos redirecionar 
+o apontador três caracteres à frente de modo a que a palavra "to" e o 
+consequente espaço não sejam guardados. Quando o verbo no infinitivo é precedido 
+por "can/could...", a expressão regular é semelhante à descrita anteriormente. 
+Mas se no caso anterior era sempre conhecido o tamanho da palavra que 
+precede o verbo, neste caso em concreto, não. Assim, é necessário utilizar 
+a função strtok de modo a dividir as palavras que fizeram matching por espaços. 
+Feito isto, os passos são semelhantes aos anteriores, com o verbo a ser inserido 
+na estrutura de dados. Finalmente, quando estamos perante uma forma interrogativa, 
+ao contrário dos dois casos anteriores, o verbo vai encontrar-se com maior 
+probabilidade na segunda palavra que sucede às expressões "do/did/does". 
+O procedimento é então bastante semelhante ao caso anterior. 
 
-Como sabemos, nem tudo retirado pelas expressões regulares corresponde a verbos. Assim, foram definidas uma série de excepções correspondentes a pronomes, advérbios, alguns padrões não frequentes em verbos no infinitivo, etc de forma a tentar evitar que o que seja imprimido no ficheiro output corresponda ao desejado.
+Como sabemos, nem tudo retirado pelas expressões regulares corresponde a verbos. 
+Assim, foram definidas uma série de excepções correspondentes a pronomes, advérbios, 
+alguns padrões não frequentes em verbos no infinitivo, etc de forma a tentar evitar 
+que o que seja imprimido no ficheiro output corresponda ao desejado.
 
-Na parte correspondente à main é tratado tudo o que está relacionado com a estrutura de um ficheiro HTML. Para além disto, são impressos para o ficheiro de output os vários verbos presentes na estrutura de dados, excluindo os repetidos.
+Na parte correspondente à main é tratado tudo o que está relacionado 
+com a estrutura de um ficheiro HTML. Para além disto, são impressos para o 
+ficheiro de output os vários verbos presentes na estrutura de dados, 
+excluindo os repetidos.
 
 \chapter{Codificação e Testes} \label{ct}
 
@@ -228,14 +339,22 @@ xyzzzz
 \section{Processador de Inglês corrente}
 
 \subsection{Alternativas, Decisões e Problemas de Implementação}
-Tal como sugerido pela segunda parte do primeiro exercício prático, o ficheiro output deveria de estar no formato HTML.
-Tal e qual como no primeiro trabalho prático decidimos que o ficheiro deveria utilizar também estilos escritos em css e incluir um script(em javascript) para 
+Tal como sugerido pela segunda parte do primeiro exercício prático, 
+o ficheiro output deveria de estar no formato HTML. Tal e qual como 
+no primeiro trabalho prático decidimos que o ficheiro deveria utilizar 
+também estilos escritos em css e incluir um script(em javascript) para 
 tornar possível o aparecimento de listas escondidas. 
-Também foi utilizada a font-awesome para juntar icons que refletem o conteúdo de cada linha apresentada. 
-O objetivo do uso destes recursos é tornar o conteúdo do ficheiro apelativo.
-Para além disso, poderíamos ter optado por outro tipo de estruturas de dados, como por exemplo, árvores binárias. 
+Também foi utilizada a font-awesome para juntar icons que refletem o 
+conteúdo de cada linha apresentada. O objetivo do uso destes recursos é 
+tornar o conteúdo do ficheiro apelativo. Para além disso, poderíamos ter 
+optado por outro tipo de estruturas de dados, como por exemplo, árvores binárias. 
 
-No que diz respeito à implementação, achamos que a o modo de resolução do problema nunca poderia ser muito diferente daquele realizado. Seria possível acrescentar mais casos que restringissem o aparecimento de outras palavras que não fossem verbos. Mas, por outro lado, a adição de mais exceções poderia levar igualmente à supressão de verbos que estariam correctos a ser apresentados no ficheiro de output.
+No que diz respeito à implementação, achamos que a o modo de 
+resolução do problema nunca poderia ser muito diferente daquele realizado. 
+Seria possível acrescentar mais casos que restringissem o aparecimento de 
+outras palavras que não fossem verbos. Mas, por outro lado, a adição de mais 
+exceções poderia levar igualmente à supressão de verbos 
+que estariam correctos a ser apresentados no ficheiro de output.
 
 \subsection{Testes realizados e Resultados}
 xyzzzz
@@ -250,12 +369,18 @@ xyzzzz
 Espetacular
 
 
-\appendix 
-\chapter{Código do Programa}
+\appendix
+\chapter{Código do Programa para Normalizador de Autores em BibTex}
 
 Lista-se a seguir o código  do programa  que foi desenvolvido.
 
-%\lstinputlisting{}%input de um ficheiro
+\lstinputlisting{../convAcentos.fl}%input de um ficheiro
+\lstinputlisting{../normNomes.fl}
+\lstinputlisting{../genGraph.fl}
+
+\chapter{Código do Programa para Processador de Inglês corrente}
+\lstinputlisting{../procIngles.fl}
+
 
 \bibliographystyle{alpha}
 \bibliography{relprojLayout}

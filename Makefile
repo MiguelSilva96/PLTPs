@@ -8,15 +8,15 @@ convAcentos: convAcentos.fl
 	flex convAcentos.fl
 	gcc lex.yy.c -o convAcentos
 
-exe1: exe1.fl
-	flex exe1.fl
-	gcc lex.yy.c $G -o exe1
+procIngles: procIngles.fl
+	flex procIngles.fl
+	gcc lex.yy.c $G -o procIngles
 
 genGraph: genGraph.fl 
 	flex genGraph.fl
 	gcc lex.yy.c -o genGraph
 
-all: normNomes convAcentos exe1 genGraph
+all: normNomes convAcentos procIngles genGraph
 
 run:
 	./convAcentos BibTEX/exemplo-utf8.bib
@@ -26,4 +26,4 @@ run:
 
 
 clean: 
-	rm -f *.bib normNomes convAcentos genGraph exe1 lex.yy.c *.txt *.html
+	rm -f *.bib normNomes convAcentos genGraph procIngles lex.yy.c *.txt *.html

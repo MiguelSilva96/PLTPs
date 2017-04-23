@@ -1,0 +1,33 @@
+\select@language {portuges}
+\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{2}
+\contentsline {chapter}{\numberline {2}An\IeC {\'a}lise e Especifica\IeC {\c c}\IeC {\~a}o}{3}
+\contentsline {section}{\numberline {2.1}Normalizador de Autores em BibTex}{3}
+\contentsline {subsection}{\numberline {2.1.1}Descri\IeC {\c c}\IeC {\~a}o informal do problema}{3}
+\contentsline {subsection}{\numberline {2.1.2}Especifica\IeC {\c c}\IeC {\~a}o dos Requisitos}{3}
+\contentsline {subsubsection}{Dados}{3}
+\contentsline {subsubsection}{Pedidos}{3}
+\contentsline {section}{\numberline {2.2}Processador de Ingl\IeC {\^e}s corrente}{4}
+\contentsline {subsection}{\numberline {2.2.1}Especifica\IeC {\c c}\IeC {\~a}o dos Requisitos}{4}
+\contentsline {subsubsection}{Dados}{4}
+\contentsline {subsubsection}{Pedidos}{4}
+\contentsline {chapter}{\numberline {3}Concep\IeC {\c c}\IeC {\~a}o/desenho da Resolu\IeC {\c c}\IeC {\~a}o}{5}
+\contentsline {section}{\numberline {3.1}Normalizador de Autores em BibTex}{5}
+\contentsline {subsection}{\numberline {3.1.1}Estruturas de Dados}{5}
+\contentsline {subsection}{\numberline {3.1.2}Algoritmos}{5}
+\contentsline {section}{\numberline {3.2}Processador de Ingl\IeC {\^e}s corrente}{5}
+\contentsline {subsection}{\numberline {3.2.1}Estruturas de Dados}{5}
+\contentsline {subsection}{\numberline {3.2.2}Algoritmos}{5}
+\contentsline {chapter}{\numberline {4}Codifica\IeC {\c c}\IeC {\~a}o e Testes}{7}
+\contentsline {section}{\numberline {4.1}Normalizador de Autores em BibTex}{7}
+\contentsline {subsection}{\numberline {4.1.1}Alternativas, Decis\IeC {\~o}es e Problemas de Implementa\IeC {\c c}\IeC {\~a}o}{7}
+\contentsline {subsection}{\numberline {4.1.2}Testes realizados e Resultados}{7}
+\contentsline {subsection}{\numberline {4.1.3}O programa \IeC {\'e} executado com ...}{7}
+\contentsline {subsection}{\numberline {4.1.4}Obt\IeC {\'e}m-se o seguinte resultado}{7}
+\contentsline {section}{\numberline {4.2}Processador de Ingl\IeC {\^e}s corrente}{7}
+\contentsline {subsection}{\numberline {4.2.1}Alternativas, Decis\IeC {\~o}es e Problemas de Implementa\IeC {\c c}\IeC {\~a}o}{7}
+\contentsline {subsection}{\numberline {4.2.2}Testes realizados e Resultados}{7}
+\contentsline {subsection}{\numberline {4.2.3}O programa \IeC {\'e} executado com ...}{7}
+\contentsline {subsection}{\numberline {4.2.4}Obt\IeC {\'e}m-se o seguinte resultado}{7}
+\contentsline {chapter}{\numberline {5}Conclus\IeC {\~a}o}{8}
+\contentsline {chapter}{\numberline {A}C\IeC {\'o}digo do Programa para Normalizador de Autores em BibTex}{9}
+\contentsline {chapter}{\numberline {B}C\IeC {\'o}digo do Programa para Processador de Ingl\IeC {\^e}s corrente}{15}
