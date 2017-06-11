@@ -1,160 +1,169 @@
 %{
-  #include <stdio.h>
-  #include <math.h>
-  #include <glib.h>
-  #include <string.h>
-  #include <ctype.h>
-  void yyerror(char*);
-  int yylex();
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <math.h>
+	#include <glib.h>
+	#include <string.h>
+	#include <ctype.h>
+
+	typedef struct variable {
+			int stack;
+			int type;
+			int size;
+	} *Var;
+
+	void yyerror(char*);
+	int yylex();
+	Var addVar(Var, int, int, int); 
+
+	GHashTable* variaveis = g_hash_table_new(g_str_hash, g_str_equal);
+	FILE *fp;
+	int sp = 0;
+	int pc = 0;
+
+
+	Var temp = (Var)malloc(sizeof(struct variavel));
+	Var v = NULL;
+
 %}
-%token VAR V INT BEGIN PREAD PPRINT STRING IF ELSE WHILE
-%type<d> INT
-%type<f> VAR BEGIN PREAD PPRINT STRING IF ELSE WHILE
-%type<c> V
-
-  GHashTable* variaveis = g_hash_table_new(g_str_hash, g_str_equal);
-  FILE *f;
-  int sp = 0;
-  int pc = 0;
-
-  typedef struct variable {
-  	 int stack;
-     int type;
-   } Var;
-   typedef struct variavel *Var;
-
-   Var addVar(Var v, int index, int type, int size) {
-		      v = (Var) malloc(sizeof(struct variable));
-		      v->index = index;
-          v->type = type;
-          v->size = size
-          return v;
-	  }
-    Var temp = (Var) malloc(sizeof(struct variable));
-    Var v = null;
-}
+%token VAR V INTGR START PREAD PPRINT IF ELSE WHILE STRING
+%union { char *s; int d; }
+%type<d> INTGR
+%type<s> V STRING
 
 %%
 Plang           : Init Body
-                ;
-Init            : VAR TP Declare                                                               {
-                                                                                              fprintf(f, "start\n");
-                                                                                              }
-                ;
+								;
+
+Init            : VAR ':' Declare { fprintf(fp, "start\n"); }
+								;
+
 Declare         : Declare Variable
-                | Variable
-                ;
-Variable        : V PV                                                                        {
-                                                                                              temp = g_hash_table_lookup(variaveis,$1);
-                                                                                              if(temp == NULL) {
-                                                                                                yyerror("Variável já declarada anteriorment!");
-                                                                                              }
-                                                                                              else {
-                                                                                                v = addVar(v,sp,0,1);
-                                                                                                g_hash_table_insert(variaveis,$1,v);
-                                                                                                fprintf(fp, "pushi 0\n");
-                                                                                                sp++;
-                                                                                                pc++;
-                                                                                              }
-                                                                                              }
-                | V PA INT PF PV                                                              {
-                                                                                              temp = g_hash_table_lookup(variaveis,$1);
-                                                                                              if(temp == NULL) {
-                                                                                                yyerror("Variável já declarada anteriormente!");
-                                                                                              }
-                                                                                              else {
-                                                                                                v = addVar(v,sp,1,$3);
-                                                                                                g_hash_table_insert(variaveis,$1,v);
-                                                                                                fprintf(fp, "pushn %d\n", $3);
-                                                                                                sp += $3;
-                                                                                                pc++;
-                                                                                              }
-                                                                                              }
-                | V PA INT PF PA INT PF PV                                                    {
-                                                                                              temp = g_hash_table_lookup(variaveis,$1);
-                                                                                              if(temp == NULL) {
-                                                                                                yyerror("Variável já declarada anteriormente!");
-                                                                                              }
-                                                                                              else {
-                                                                                                v = addVar(v,sp,1,$3*$6);
-                                                                                                g_hash_table_insert(variaveis,$1,v);
-                                                                                                fprintf(fp, "pushn %d\n", $3*$6);
-                                                                                                sp += $3*$6;
-                                                                                                pc++;
-                                                                                              }
-                                                                                              }
-                ;
-Body            : BEGIN TP Instructions PV
-                ;
+								| Variable
+								;
+
+Variable        : V ';' {
+										temp = g_hash_table_lookup(variaveis,$1);
+										if(temp == NULL) {
+											yyerror("Variável já declarada anteriormente!");
+										}
+										else {
+											v = addVar(v,sp,0,1);
+											g_hash_table_insert(variaveis,$1,v);
+											fprintf(fp, "pushi 0\n");
+											sp++;
+											pc++;
+										}
+								}
+								| V '(' INTGR ')' ';'  {
+										temp = g_hash_table_lookup(variaveis,$1);
+										if(temp == NULL) {
+											yyerror("Variável já declarada anteriormente!");
+										}
+										else {
+											v = addVar(v,sp,1,$3);
+											g_hash_table_insert(variaveis,$1,v);
+											fprintf(fp, "pushn %d\n", $3);
+											sp += $3;
+											pc++;
+										}
+								}
+								| V '(' INTGR ')' '(' INTGR ')' ';' {
+										temp = g_hash_table_lookup(variaveis,$1);
+										if(temp == NULL) {
+											yyerror("Variável já declarada anteriormente!");
+										}
+										else {
+											v = addVar(v,sp,1,$3*$6);
+											g_hash_table_insert(variaveis,$1,v);
+											fprintf(fp, "pushn %d\n", $3*$6);
+											sp += $3*$6;
+											pc++;
+										}
+								}
+								;
+
+Body            : START ':' Instructions ';'
+								;
+
 Instructions    : Instructions Instruction
-                | Instruction
-                ;
+								| Instruction
+								;
+
 Instruction     : Assignment
-                | Read
-                | Print
-                | Condicional
-                | Cyclic
-                ;
-Assignment      : V TO Expression PV                                                          {
-                                                                                              temp = g_hash_table_lookup(variaveis,$1);
-                                                                                              if(temp == NULL) {
-                                                                                                yyerror("A variável não foi anteriormente declarada!");
-                                                                                              }
-                                                                                              else {
-                                                                                                fprintf(fp, "storeg %d\n", temp->index);
-                                                                                                pc++;
-                                                                                              }
-                                                                                              }
-                | V PA Expression PF TO Expression PV
-                | V PA Expression PF PA Expression PF TO Expression PV
-                ;
-Read            : PREAD PA V PF PV
-                ;
-Print           : PPRINT PA Expression PF PV
-                | PPRINT PA STRING PF PV
-                ;
-Condicional     : IF PA Accumulator PF BA Instructions BF ELSE BA Instructions BF
-                | IF PA Accumulator PF BA Instructions BF
-                ;
-Cyclic          : WHILE PA Accumulator PF BA Instructions BF
-                ;
-Accumulator     : Accumulator OR Comparator
-                | Accumulator AND Comparator
-                | Comparator
-                ;
+								| Read
+								| Print
+								| Condicional
+								| Cyclic
+								;
+
+Assignment      : V '=' Expression ';' {
+										temp = g_hash_table_lookup(variaveis,$1);
+										if(temp == NULL) {
+											yyerror("A variável não foi anteriormente declarada!");
+										}
+										else {
+											fprintf(fp, "storeg %d\n", temp->stack);
+											pc++;
+										}
+								}
+								| V '(' Expression ')' '=' Expression ';'
+								| V '(' Expression ')' '(' Expression ')' '=' Expression ';'
+								;
+Read            : PREAD '(' V ')' ';'
+								;
+Print           : PPRINT '(' Expression ')' ';'
+								| PPRINT '(' STRING ')' ';'
+								;
+Condicional     : IF '(' Accumulator ')' '{' Instructions '}' ELSE '{' Instructions '}'
+								| IF '(' Accumulator ')' '{' Instructions '}'
+								;
+Cyclic          : WHILE '(' Accumulator ')' '{' Instructions '}'
+								;
+Accumulator     : Comparator "||" Accumulator
+								| Comparator "&&" Accumulator
+								| Comparator
+								;
 Comparator      : Expression
-                | PA Expression PF
-                | Expression EQUALS Expression
-                | Expression DIFF Expression
-                | Expression GR Expression
-                | Expression LESS Expression
-                | Expression GREQUALS Expression
-                | Expression LEQUALS Expression
-                ;
-Expression      : Expression PLUS P
-                | Expression MINUS P
-                | P
-                ;
-P               : P MULT F
-                | p DIV Fat
-                | Fat
-                ;
-Fat             : Es EXP Fat
-                | Es
-                ;
-Es              : PA Expression PF
-                | INT
-                | V
-                ;
+								| Expression "==" Expression
+								| Expression "!=" Expression
+								| Expression ">" Expression
+								| Expression "<" Expression
+								| Expression ">=" Expression
+								| Expression "<=" Expression
+								;
+Expression      : Expression '+' P
+								| Expression '-' P
+								| P
+								;
+P               : P '*' Fat
+								| P '/' Fat
+								| Fat
+								;
+Fat             : Es '^' Fat
+								| Es
+								;
+Es              : '(' Expression ')'
+								| INTGR
+								| V
+								;
 %%
 #include "lex.yy.c"
 
 void yyerror(char *s) {
-  fprintf(stderr, "linha %d: [%s] - %s\n", yylineno, yytext, s);
+	fprintf(stderr, "linha %d: [%s] - %s\n", yylineno, yytext, s);
+}
+
+Var addVar(Var v, int index, int type, int size) {
+	v = (Var) malloc(sizeof(struct variavel));
+	v->stack = index;
+	v->type = type;
+	v->size = size;
+	return v;
 }
 
 int main(){
-    f = open("teste.vm", "w");
-    yyparse();
-    return 0;
+		fp = fopen("teste.vm", "w");
+		yyparse();
+		return 0;
 }
