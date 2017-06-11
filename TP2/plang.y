@@ -14,7 +14,7 @@
 
 	void yyerror(char*);
 	int yylex();
-	Var addVar(Var, int, int, int); 
+	Var addVar(Var, int, int, int);
 
 	GHashTable* variaveis;
 	FILE *fp;
@@ -108,12 +108,28 @@ Assignment      : V '-' '>' Expression ';' {
 										}
 								}
 								| V '(' Expression ')' '-' '>' Expression ';'
-								| V '(' Expression ')' '(' Expression ')' "->" Expression ';'
+								| V '(' Expression ')' '(' Expression ')' '-' '>' Expression ';'
 								;
-Read            : PREAD '(' V ')' ';'
+Read            : PREAD '(' V ')' ';' {
+										temp = g_hash_table_lookup(variaveis,$3);
+										if(temp == NULL) {
+											yyerror("A variável não foi anteriormente declarada!");
+										}
+										else {
+											fprintf(fp, "read\natoi\nstoreg %d\n", temp->stack);
+											pc += 3;
+										}
+								}
 								;
-Print           : PPRINT '(' Expression ')' ';'
-								| PPRINT '(' STRING ')' ';'
+Print           : PPRINT '(' Expression ')' ';' {
+										fprintf(fp, "writei\n");
+										pc++;
+								}
+								| PPRINT '(' STRING ')' ';' {
+										fprintf(fp, "pushs %s\n", $3);
+										fprintf(fp, "writes\n");
+										pc +=2;
+								}
 								;
 Condicional     : IF '(' Accumulator ')' '{' Instructions '}' ELSE '{' Instructions '}'
 								| IF '(' Accumulator ')' '{' Instructions '}'
@@ -125,27 +141,66 @@ Accumulator     : Comparator '|' '|' Accumulator
 								| Comparator
 								;
 Comparator      : Expression
-								| Expression '=' '=' Expression
+								| Expression '=' '=' Expression {
+									fprintf(fp, "equal\n");
+									pc++;
+								}
 								| Expression '!' '=' Expression
-								| Expression '>' Expression
-								| Expression '<' Expression
-								| Expression '>' '=' Expression
-								| Expression '<' '=' Expression
+								| Expression '>' Expression {
+									fprintf(fp, "sup\n");
+									pc++;
+								}
+								| Expression '<' Expression {
+									fprintf(fp, "inf\n");
+									pc++;
+								}
+								| Expression '>' '=' Expression {
+									fprintf(fp, "supeql\n");
+									pc++;
+								}
+								| Expression '<' '=' Expression {
+									fprintf(fp, "infeq\n");
+									pc++;
+								}
 								;
-Expression      : Expression '+' P
-								| Expression '-' P
+Expression      : Expression '+' P {
+									fprintf(fp, "add\n");
+									pc++;
+								}
+								| Expression '-' P {
+									fprintf(fp, "sub\n");
+									pc++;
+								}
 								| P
 								;
-P               : P '*' Fat
-								| P '/' Fat
+P               : P '*' Fat {
+									fprintf(fp, "mul\n");
+									pc++;
+								}
+								| P '/' Fat {
+									fprintf(fp, "div\n");
+									pc++;
+								}
 								| Fat
 								;
 Fat             : Es '^' Fat
 								| Es
 								;
 Es              : '(' Expression ')'
-								| INTGR
-								| V
+								| INTGR {
+									fprintf(fp, "pushi %d\n", $1);
+									pc++;
+								}
+								| V {
+									temp = g_hash_table_lookup(variaveis,$1);
+									if(!temp) {
+										yyerror("A variável não foi anteriormente declarada!");
+									}
+									else {
+										fprintf(fp, "pushg %d\n", temp->stack);
+										pc++;
+									}
+								}
 								;
 %%
 #include "lex.yy.c"

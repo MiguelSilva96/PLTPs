@@ -2,7 +2,7 @@
 
 
 %%
-[0-9]+                      {
+[0-9]+        {
 							yylval.d = atoi(yytext);
 							return INTGR;
 							}
@@ -34,12 +34,12 @@ while                       {
 							yylval.s = strdup(yytext);
 							return V;
 							}
-\"[.\n]*\"					{
+\"[^\n]*\"		{
 							yylval.s = strdup(yytext);
 							return STRING;
 							}
 [ \t\n]                     { }
 
-.|\n 						{ yyerror("Caracter desconhecido"); }	
+.|\n 						{ yyerror("Caracter desconhecido"); }
 
 %%

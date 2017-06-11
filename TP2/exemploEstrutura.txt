@@ -6,7 +6,8 @@ array(10);
 biarray(10)(10);
 START:
 x->0;
-array(0)->1;
-Pread(w);
+Pprint(x);
+Pprint("Ler número:");
+z->1;
 Pprint(z);
 ;
