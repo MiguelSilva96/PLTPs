@@ -1,0 +1,25 @@
+Estrutura exemplo:
+VAR:
+x;
+y;
+z;
+array(10);
+biarray(10)(10);
+BEGIN:
+x->0;
+array(0)->1;
+Pread(w);
+Pprint(z);
+if(w>0) {
+  .... ;
+  .... ;
+}
+else {
+  .... ;
+  .... ;
+}
+while(z<0) {
+  .... ;
+  .... ;
+}
+;
