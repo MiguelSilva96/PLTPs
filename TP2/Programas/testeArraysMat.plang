@@ -1,0 +1,17 @@
+VAR:
+	x[10];
+	y{2}[5];
+START:
+	Pprint("Insira numero para posiçao 0: ");
+	Pread(x[0]);
+	Pprint(" \n");
+	Pprint("Na pos 0 está: ");
+	Pprint(x[0]);
+	Pprint(" \n");
+	Pprint("Numero para linha 0 pos 2: ");
+	Pread(y{0}[2]);
+	Pprint(" \n");
+	Pprint("Ficou: ");
+	Pprint(y{0}[2]);
+	Pprint(" \n");
+;

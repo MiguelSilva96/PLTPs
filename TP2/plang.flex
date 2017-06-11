@@ -15,9 +15,6 @@ VAR                         {
 START                       {
 							return START;
 							}
-PreadM											{
-							return PREADM;
-							}
 Pread                       {
 							return PREAD;
 							}

@@ -1,8 +1,0 @@
-VAR:
-x;
-y;
-z;
-array{2}[2];
-START:
-array{1}[1]->10;
-;

@@ -6,264 +6,345 @@
 	#include <string.h>
 	#include <ctype.h>
 
+	#define MAXSTACK 512
+
 	typedef struct variable {
 			int stack;
 			int size;
 	} *Var;
 
+	typedef struct stack {
+		int blocks[MAXSTACK];
+		int top;
+	} *Stack;
+
+	int pop(Stack);
+	void push(int, Stack);
 	void yyerror(char*);
 	int yylex();
 	Var addVar(Var, int, int);
 
 	GHashTable* variaveis;
+	Stack ifs;
+	Stack whiles;
 	FILE *fp;
 	int sp = 0;
+	int pc = 0;
+	int blocos = 0;
+
+
 	Var temp;
 	Var v = NULL;
 
 %}
-%token VAR V INTGR START PREAD PPRINT IF ELSE WHILE STRING PREADM
+%token VAR V INTGR START PREAD PPRINT IF ELSE WHILE STRING
+
 %union { char *s; int d; }
 %type<d> INTGR
 %type<s> V STRING
 
 %%
-Plang           : Init Body
-								;
+Plang		: Init Body { fprintf(fp, "end\n"); }
+			;
 
-Init            : VAR ':' Declare { fprintf(fp, "		start\n"); }
-								;
+Init		: VAR ':' Declare { fprintf(fp, "start\n"); }
+			;
 
-Declare         : Declare Variable
-								| { variaveis = g_hash_table_new(g_str_hash, g_str_equal); }
-								;
+Declare		: Declare Variable
+			| { 
+				variaveis = g_hash_table_new(g_str_hash, g_str_equal);
+				ifs = (Stack)malloc(sizeof(struct stack));
+				ifs -> top = 0;
+				whiles = (Stack)malloc(sizeof(struct stack));
+				whiles -> top = 0;
+			}
+			;
 
-Variable        : V ';' {
-												temp = g_hash_table_lookup(variaveis,$1);
-												if(temp) {
-													yyerror("Variável já declarada anteriormente!");
-												}
-												else {
-													v = addVar(v,sp,1);
-													g_hash_table_insert(variaveis,$1,v);
-													fprintf(fp, "		pushi 0\n");
-													sp++;
-												}
-												}
-								|  V '[' INTGR ']' ';'  {
-										temp = g_hash_table_lookup(variaveis,$1);
-										if(temp) {
-											yyerror("Variável já declarada anteriormente!");
-										}
-										else {
-											v = addVar(v,sp,$3);
-											g_hash_table_insert(variaveis,$1,v);
-											fprintf(fp, "		pushn %d\n", $3);
-											sp += $3;
-										}
-								}
-								|  V '{' INTGR '}' '[' INTGR ']' ';' {
-										temp = g_hash_table_lookup(variaveis,$1);
-										if(temp) {
-											yyerror("Variável já declarada anteriormente!");
-										}
-										else {
-											v = addVar(v,sp,$6);
-											g_hash_table_insert(variaveis,$1,v);
-											fprintf(fp, "		pushn %d\n", $3*$6);
-											sp += $3*$6;
-										}
-								}
-								;
+Variable	: V ';' {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(temp) {
+					yyerror("Variável já declarada anteriormente!");
+				}
+				else {
+					v = addVar(v,sp,1);
+					g_hash_table_insert(variaveis,$1,v);
+					fprintf(fp, "		pushi 0\n");
+					sp++;
+					pc++;
+				}
+			}
+			|  V '[' INTGR ']' ';'  {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(temp) {
+					yyerror("Variável já declarada anteriormente!");
+				}
+				else {
+					v = addVar(v,sp,$3);
+					g_hash_table_insert(variaveis,$1,v);
+					fprintf(fp, "		pushn %d\n", $3);
+					sp += $3;
+				}
+			}
+			|  V '{' INTGR '}' '[' INTGR ']' ';' {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(temp) {
+					yyerror("Variável já declarada anteriormente!");
+				}
+				else {
+					v = addVar(v,sp,$6);
+					g_hash_table_insert(variaveis,$1,v);
+					fprintf(fp, "		pushn %d\n", $3*$6);
+					sp += $3*$6;
+				}
+			}
+			;
 
-Body            : START ':' Instructions ';'
-								;
+Body 		: START ':' Instructions ';'
+			;
 
-Instructions    : Instructions Instruction
-								| Instruction
-								;
+Instructions: Instructions Instruction
+			| Instruction
+			;
 
-Instruction     : Assignment
-								| Read
-								| Print
-								| Condicional
-								| Cyclic
-								;
+Instruction : Assignment
+			| Read
+			| Print
+			| Condicional
+			| Cyclic
+			;
 
-Assignment      : V '-' '>' Expression ';' {
-										temp = g_hash_table_lookup(variaveis,$1);
-										if(!temp) {
-											yyerror("A variável não foi anteriormente declarada!");
-										}
-										else {
-											fprintf(fp, "		storeg %d\n", temp->stack);
-										}
-								}
-								| V  {
-									 temp = g_hash_table_lookup(variaveis,$1);
-									 if(!temp) {
-										 yyerror("A variável não foi anteriormente declarada!");
-									 }
-									 else {
-										 fprintf(fp, "		pushgp\n		pushi %d\n		padd\n", temp->stack);
-									 }
-								} '[' Expression ']' '-' '>' Expression ';' {
-										fprintf(fp, "		storen\n");
-								}
-								|  V '{'  {
-									 temp = g_hash_table_lookup(variaveis,$1);
-									 if(!temp) {
-										 yyerror("A variável não foi anteriormente declarada!");
-									 }
-									 else {
-										 fprintf(fp, "		pushgp\n		pushi %d\n		padd\n", temp->stack);
-									 }
-								 } Expression '}' '[' {
-											fprintf(fp, "		pushi %d\n		mul\n", temp->size);
-									} Expression ']' '-' '>' {
-										fprintf(fp, "		add\n");
-									} Expression ';' {
-										fprintf(fp, "		storen\n");
-									}
-								;
+Assignment	: V '-' '>' Expression ';' {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		storeg %d\n", temp->stack);
+					pc++;
+				}
+			}
+			| V  {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} '[' Expression ']' '-' '>' Expression ';' {
+				fprintf(fp, "		storen\n");
+			}
+			|  V '{'  {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} Expression '}' '[' {
+				fprintf(fp, "		pushi %d\n", temp->size);
+				fprintf(fp, "		mul\n");
+			} Expression ']' '-' '>' {
+				fprintf(fp, "		add\n");
+			} Expression ';' {
+				fprintf(fp, "		storen\n");
+			}
+			;
 
-Read            : PREAD '(' V ')' ';' {
-										temp = g_hash_table_lookup(variaveis,$3);
-										if(temp == NULL) {
-											yyerror("A variável não foi anteriormente declarada!");
-										}
-										else {
-											fprintf(fp, "		read\n		atoi\n		storeg %d\n", temp->stack);
-										}
-								}
-								| PREAD '(' V  {
-									 temp = g_hash_table_lookup(variaveis,$3);
-									 if(!temp) {
-										 yyerror("A variável não foi anteriormente declarada!");
-									 }
-									 else {
-										 fprintf(fp, "		pushgp\n		pushi %d\n		padd\n", temp->stack);
-									 }
-									 } '[' Expression ']' ')' ';' {
-										fprintf(fp, "		read\n		atoi\n		storen\n");
-									}
-								| PREADM '(' V '[' {
-										temp = g_hash_table_lookup(variaveis,$3);
-										if(!temp) {
-											yyerror("A variável não foi anteriormente declarada!");
-										}
-										else {
-											fprintf(fp, "		pushgp\n		pushi %d\n		padd\n", temp->stack);
-										}
-										} Expression ']' '[' {
-											fprintf(fp, "		pushi %d\n		mul\n", temp->size);
-										} Expression ']' ')' ';' {
-											fprintf(fp, "		read\n		atoi\n		storen\n");
-										}
-								;
+Read		: PREAD '(' V ')' ';' {
+				temp = g_hash_table_lookup(variaveis,$3);
+				if(temp == NULL) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		read\n");
+					fprintf(fp, "		atoi\n");
+					fprintf(fp, "		storeg %d\n", temp->stack);
+					pc += 3;
+				}
+			}
+			| PREAD '(' V  {
+				temp = g_hash_table_lookup(variaveis,$3);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} '[' Expression ']' ')' ';' {
+				fprintf(fp, "		read\n");
+				fprintf(fp, "		atoi\n");
+				fprintf(fp, "		storen\n");
+			}
+			| PREAD '(' V '{' {
+				temp = g_hash_table_lookup(variaveis,$3);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} Expression '}' '[' {
+				fprintf(fp, "		pushi %d\n", temp->size);
+				fprintf(fp, "		mul\n");
+			} Expression ']' ')' ';' {
+				fprintf(fp, "		read\n");
+				fprintf(fp, "		atoi\n");
+				fprintf(fp, "		storen\n");
+			}
+			;
 
-Print           : PPRINT '(' Expression ')' ';' {
-										fprintf(fp, "		writei\n");
-								}
-								| PPRINT '(' STRING ')' ';' {
-										fprintf(fp, "		pushs %s\n", $3);
-										fprintf(fp, "		writes\n");
-								}
-								;
 
-Condicional     : IF '(' Accumulator ')' '{' Instructions '}' ELSE '{' Instructions '}'
-								| IF '(' Accumulator ')' '{' Instructions '}'
-								;
+Print		: PPRINT '(' Expression ')' ';' {
+				fprintf(fp, "		writei\n");
+				pc++;
+			}
+			| PPRINT '(' STRING ')' ';' {
+				fprintf(fp, "		pushs %s\n", $3);
+				fprintf(fp, "		writes\n");
+				pc +=2;
+			}
+			;
 
-Cyclic          : WHILE '(' Accumulator ')' '{' Instructions '}'
-								;
+Condicional	: IF '(' Accumulator ')' {
+				blocos++;
+				fprintf(fp, "		jz bloco%d\n", blocos);
+				push(blocos, ifs);
+			} '{' Instructions '}' Opelse
+			;
 
-Accumulator     : Comparator '|' '|' Accumulator
-								| Comparator '&' '&' Accumulator
-								| Comparator
-								;
+Opelse		: ELSE { 
+				fprintf(fp, "bloco%d:\n", pop(ifs));
+			} '{' Instructions '}'
+			| { 
+				fprintf(fp, "bloco%d:\n", pop(ifs));
+			}
+			;
 
-Comparator      : Expression
-								| Expression '=' '=' Expression {
-									fprintf(fp, "		equal\n");
-								}
-								| Expression '!' '=' Expression
-								| Expression '>' Expression {
-									fprintf(fp, "		sup\n");
-								}
-								| Expression '<' Expression {
-									fprintf(fp, "		inf\n");
-								}
-								| Expression '>' '=' Expression {
-									fprintf(fp, "		supeql\n");
-								}
-								| Expression '<' '=' Expression {
-									fprintf(fp, "		infeq\n");
-								}
-								;
+Cyclic		: WHILE {
+				blocos++;
+				fprintf(fp, "bloco%d:\n", blocos);
+				push(blocos, whiles);
+			} '(' Accumulator ')' {
+				blocos++;
+				fprintf(fp, "		jz bloco%d\n", blocos);
+				push(blocos, ifs);
+			} '{' Instructions '}' {
+				fprintf(fp, "		jump bloco%d\n", pop(whiles));
+				fprintf(fp, "bloco%d:\n", pop(ifs));
+			}
+			;
 
-Expression      : Expression '+' P {
-									fprintf(fp, "		add\n");
-								}
-								| Expression '-' P {
-									fprintf(fp, "		sub\n");
-								}
-								| P
-								;
+Accumulator	: Comparator '|' '|' Accumulator
+			| Comparator '&' '&' Accumulator
+			| Comparator
+			;
 
-P               : P '*' Fat {
-									fprintf(fp, "		mul\n");
-								}
-								| P '/' Fat {
-									fprintf(fp, "		div\n");
-								}
-								| Fat
-								;
+Comparator	: Expression
+			| Expression '=' '=' Expression {
+				fprintf(fp, "		equal\n");
+				pc++;
+			}
+			| Expression '!' '=' Expression
+			| Expression '>' Expression {
+				fprintf(fp, "		sup\n");
+				pc++;
+			}
+			| Expression '<' Expression {
+				fprintf(fp, "		inf\n");
+				pc++;
+			}
+			| Expression '>' '=' Expression {
+				fprintf(fp, "		supeq\n");
+				pc++;
+			}
+			| Expression '<' '=' Expression {
+				fprintf(fp, "		infeq\n");
+				pc++;
+			}
+			;
 
-Fat             : Es '^' Fat
-								| Es
-								;
+Expression	: Expression '+' P {
+				fprintf(fp, "		add\n");
+				pc++;
+			}
+			| Expression '-' P {
+				fprintf(fp, "		sub\n");
+				pc++;
+			}
+			| P
+			;
 
-Es              : '(' Expression ')'
-								| INTGR {
-									fprintf(fp, "		pushi %d\n", $1);
-								}
-								| V {
-									temp = g_hash_table_lookup(variaveis,$1);
-									if(!temp) {
-										yyerror("A variável não foi anteriormente declarada!");
-									}
-									else {
-										fprintf(fp, "		pushg %d\n", temp->stack);
-									}
-								}
-								| V  {
-									 temp = g_hash_table_lookup(variaveis,$1);
-									 if(!temp) {
-										 yyerror("A variável não foi anteriormente declarada!");
-									 }
-									 else {
-										 fprintf(fp, "		pushgp\n		pushi %d\n		padd\n", temp->stack);
-									 }
-									} '[' Expression ']' {
-										fprintf(fp, "		loadn\n");
-									}
-								| V '{'  {
-									 temp = g_hash_table_lookup(variaveis,$1);
-									 if(!temp) {
-										 yyerror("A variável não foi anteriormente declarada!");
-									 }
-									 else {
-										 fprintf(fp, "		pushgp\n		pushi %d\n		padd\n", temp->stack);
-									 }
-								 } Expression '}' '[' {
-											fprintf(fp, "		pushi %d\n		mul\n", temp->size);
-									} Expression ']' {
-										fprintf(fp, "		add\n		load\n");
-									}
-								;
+P			: P '*' Fat {
+				fprintf(fp, "		mul\n");
+				pc++;
+			}
+			| P '/' Fat {
+				fprintf(fp, "		div\n");
+				pc++;
+			}
+			| Fat
+			;
 
+Fat			: Es '^' Fat
+			| Es
+			;
+
+Es			: '(' Expression ')'
+			| INTGR {
+				fprintf(fp, "		pushi %d\n", $1);
+			}
+			| V {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushg %d\n", temp->stack);
+				}
+			}
+			| V  {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} '[' Expression ']' {
+				fprintf(fp, "		loadn\n");
+			}
+			| V '{'  {
+				temp = g_hash_table_lookup(variaveis,$1);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} Expression '}' '[' {
+				fprintf(fp, "		pushi %d\n", temp->size);
+				fprintf(fp, "		mul\n");
+			} Expression ']' {
+				fprintf(fp, "		add\n");
+				fprintf(fp, "		load\n");
+			}
+			;
 %%
+
 #include "lex.yy.c"
 
 void yyerror(char *s) {
@@ -277,8 +358,25 @@ Var addVar(Var v, int index, int size) {
 	return v;
 }
 
-int main(){
-		fp = fopen("teste.vm", "w");
-		yyparse();
-		return 0;
+void push(int i, Stack s) {
+	(s -> blocks)[s -> top] = i;
+	(s -> top)++;
+}
+
+int pop(Stack s) {
+	(s -> top)--;
+	int res = (s -> blocks)[s -> top];
+	return res; 
+}
+
+int main(int argc, char **argv){
+	if(argc > 1) {
+		yyin = fopen(argv[1], "r");
+		if(argc > 2)
+			fp = fopen(argv[2], "w");
+	}
+	else
+		fp = fopen("out.vm", "w");
+	yyparse();
+	return 0;
 }

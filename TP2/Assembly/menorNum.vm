@@ -1,0 +1,56 @@
+		pushi 0
+		pushi 0
+		pushi 0
+		pushi 0
+start
+		pushs "Quantos inteiros?\n"
+		writes
+		read
+		atoi
+		storeg 0
+		pushi 0
+		storeg 2
+		pushg 0
+		pushi 0
+		sup
+		jz bloco1
+		read
+		atoi
+		storeg 1
+		pushg 1
+		storeg 3
+		pushg 2
+		pushi 1
+		add
+		storeg 2
+bloco2:
+		pushg 2
+		pushg 0
+		inf
+		jz bloco3
+		read
+		atoi
+		storeg 1
+		pushg 1
+		pushg 3
+		inf
+		jz bloco4
+		pushg 1
+		storeg 3
+bloco4:
+		pushg 2
+		pushi 1
+		add
+		storeg 2
+		jump bloco2
+bloco3:
+		pushs "Menor número:"
+		writes
+		pushg 3
+		writei
+		pushs " \n"
+		writes
+bloco1:
+		pushs "Não inseriu nenhum número :(\n"
+		writes
+end

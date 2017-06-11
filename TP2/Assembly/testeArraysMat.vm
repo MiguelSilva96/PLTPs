@@ -1,0 +1,53 @@
+		pushn 10
+		pushn 10
+start
+		pushs "Insira numero para posiçao 0: "
+		writes
+		pushgp
+		pushi 0
+		padd
+		pushi 0
+		read
+		atoi
+		storen
+		pushs " \n"
+		writes
+		pushs "Na pos 0 está: "
+		writes
+		pushgp
+		pushi 0
+		padd
+		pushi 0
+		loadn
+		writei
+		pushs " \n"
+		writes
+		pushs "Numero para linha 0 pos 2: "
+		writes
+		pushgp
+		pushi 10
+		padd
+		pushi 0
+		pushi 5
+		mul
+		pushi 2
+		read
+		atoi
+		storen
+		pushs " \n"
+		writes
+		pushs "Ficou: "
+		writes
+		pushgp
+		pushi 10
+		padd
+		pushi 0
+		pushi 5
+		mul
+		pushi 2
+		add
+		load
+		writei
+		pushs " \n"
+		writes
+end

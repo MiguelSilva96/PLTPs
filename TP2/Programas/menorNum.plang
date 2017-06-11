@@ -1,0 +1,28 @@
+VAR:
+	x;
+	y;
+	z;
+	w;
+START:
+	Pprint("Quantos inteiros?\n");
+	Pread(x);
+	z -> 0;
+	if(x > 0) {
+		Pread(y);
+		w- > y;
+		z -> z + 1;
+		while(z < x) {
+			Pread(y);
+			if(y < w) {
+				w -> y;
+			}
+			z -> z + 1;
+		}
+		Pprint("Menor número:");
+		Pprint(w); 
+		Pprint(" \n");
+	}
+	else {
+		Pprint("Não inseriu nenhum número :(\n");
+	}
+;
