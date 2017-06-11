@@ -2,12 +2,7 @@ VAR:
 x;
 y;
 z;
-array(10);
-biarray(10)(10);
+array{2}[2];
 START:
-x->0;
-Pprint(x);
-Pprint("Ler número:");
-z->1;
-Pprint(z);
+array{1}[1]->10;
 ;

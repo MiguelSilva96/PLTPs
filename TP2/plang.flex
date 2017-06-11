@@ -2,11 +2,11 @@
 
 
 %%
-[0-9]+        {
+-?[0-9]+        {
 							yylval.d = atoi(yytext);
 							return INTGR;
 							}
-[\^+\-*/()=><;:{}\|&!]		{
+[\^+\-*/\[\]=><;,():{}\|&!]		{
 							return yytext[0];
 							}
 VAR                         {
@@ -14,6 +14,9 @@ VAR                         {
 							}
 START                       {
 							return START;
+							}
+PreadM											{
+							return PREADM;
 							}
 Pread                       {
 							return PREAD;
