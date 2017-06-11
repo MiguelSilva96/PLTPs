@@ -16,13 +16,13 @@
 	int yylex();
 	Var addVar(Var, int, int, int); 
 
-	GHashTable* variaveis = g_hash_table_new(g_str_hash, g_str_equal);
+	GHashTable* variaveis;
 	FILE *fp;
 	int sp = 0;
 	int pc = 0;
 
 
-	Var temp = (Var)malloc(sizeof(struct variavel));
+	Var temp;
 	Var v = NULL;
 
 %}
@@ -39,12 +39,12 @@ Init            : VAR ':' Declare { fprintf(fp, "start\n"); }
 								;
 
 Declare         : Declare Variable
-								| Variable
+								| { variaveis = g_hash_table_new(g_str_hash, g_str_equal); }
 								;
 
 Variable        : V ';' {
 										temp = g_hash_table_lookup(variaveis,$1);
-										if(temp == NULL) {
+										if(temp) {
 											yyerror("Variável já declarada anteriormente!");
 										}
 										else {
@@ -57,7 +57,7 @@ Variable        : V ';' {
 								}
 								| V '(' INTGR ')' ';'  {
 										temp = g_hash_table_lookup(variaveis,$1);
-										if(temp == NULL) {
+										if(temp) {
 											yyerror("Variável já declarada anteriormente!");
 										}
 										else {
@@ -70,7 +70,7 @@ Variable        : V ';' {
 								}
 								| V '(' INTGR ')' '(' INTGR ')' ';' {
 										temp = g_hash_table_lookup(variaveis,$1);
-										if(temp == NULL) {
+										if(temp) {
 											yyerror("Variável já declarada anteriormente!");
 										}
 										else {
@@ -97,9 +97,9 @@ Instruction     : Assignment
 								| Cyclic
 								;
 
-Assignment      : V '=' Expression ';' {
+Assignment      : V '-' '>' Expression ';' {
 										temp = g_hash_table_lookup(variaveis,$1);
-										if(temp == NULL) {
+										if(!temp) {
 											yyerror("A variável não foi anteriormente declarada!");
 										}
 										else {
@@ -107,8 +107,8 @@ Assignment      : V '=' Expression ';' {
 											pc++;
 										}
 								}
-								| V '(' Expression ')' '=' Expression ';'
-								| V '(' Expression ')' '(' Expression ')' '=' Expression ';'
+								| V '(' Expression ')' '-' '>' Expression ';'
+								| V '(' Expression ')' '(' Expression ')' "->" Expression ';'
 								;
 Read            : PREAD '(' V ')' ';'
 								;
@@ -120,17 +120,17 @@ Condicional     : IF '(' Accumulator ')' '{' Instructions '}' ELSE '{' Instructi
 								;
 Cyclic          : WHILE '(' Accumulator ')' '{' Instructions '}'
 								;
-Accumulator     : Comparator "||" Accumulator
-								| Comparator "&&" Accumulator
+Accumulator     : Comparator '|' '|' Accumulator
+								| Comparator '&' '&' Accumulator
 								| Comparator
 								;
 Comparator      : Expression
-								| Expression "==" Expression
-								| Expression "!=" Expression
-								| Expression ">" Expression
-								| Expression "<" Expression
-								| Expression ">=" Expression
-								| Expression "<=" Expression
+								| Expression '=' '=' Expression
+								| Expression '!' '=' Expression
+								| Expression '>' Expression
+								| Expression '<' Expression
+								| Expression '>' '=' Expression
+								| Expression '<' '=' Expression
 								;
 Expression      : Expression '+' P
 								| Expression '-' P
@@ -155,7 +155,7 @@ void yyerror(char *s) {
 }
 
 Var addVar(Var v, int index, int type, int size) {
-	v = (Var) malloc(sizeof(struct variavel));
+	v = (Var) malloc(sizeof(struct variable));
 	v->stack = index;
 	v->type = type;
 	v->size = size;

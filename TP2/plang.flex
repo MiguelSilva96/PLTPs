@@ -6,7 +6,7 @@
 							yylval.d = atoi(yytext);
 							return INTGR;
 							}
-[\^+\-*/()=><;{}\|&!]		{
+[\^+\-*/()=><;:{}\|&!]		{
 							return yytext[0];
 							}
 VAR                         {
