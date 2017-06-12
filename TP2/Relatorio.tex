@@ -1,0 +1,221 @@
+%
+% Layout retirado de http://www.di.uminho.pt/~prh/curplc09.html#notas
+%
+\documentclass{report}
+\usepackage[portuges]{babel}
+\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}
+
+\usepackage{url}
+\usepackage{enumerate}
+
+%\usepackage{alltt}
+%\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage{eurosym}
+%LISTING - GENERAL
+\lstset{
+    language=Awk,
+    basicstyle=\ttfamily\small,
+    numberstyle=\footnotesize,
+    numbers=left,
+    frame=single,
+    tabsize=2,
+    title=\lstname,
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,
+    framextopmargin=2pt,
+    framexbottommargin=2pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    showspaces=false,
+    showstringspaces=false,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+    {ã}{{\~a}}1 {º}{{\textsuperscript{o}}}1 {ç}{{\c c}}1 {Ç}{{\c C}}1
+    {€}{{\euro}}1
+}
+
+
+%
+%\lstset{ %
+%	language=Java,							% choose the language of the code
+%	basicstyle=\ttfamily\footnotesize,		% the size of the fonts that are used for the code
+%	keywordstyle=\bfseries,					% set the keyword style
+%	%numbers=left,							% where to put the line-numbers
+%	numberstyle=\scriptsize,				% the size of the fonts that are used for the line-numbers
+%	stepnumber=2,							% the step between two line-numbers. If it's 1 each line
+%											% will be numbered
+%	numbersep=5pt,							% how far the line-numbers are from the code
+%	backgroundcolor=\color{white},			% choose the background color. You must add \usepackage{color}
+%	showspaces=false,						% show spaces adding particular underscores
+%	showstringspaces=false,					% underline spaces within strings
+%	showtabs=false,							% show tabs within strings adding particular underscores
+%	frame=none,								% adds a frame around the code
+%	%abovecaptionskip=-.8em,
+%	%belowcaptionskip=.7em,
+%	tabsize=2,								% sets default tabsize to 2 spaces
+%	captionpos=b,							% sets the caption-position to bottom
+%	breaklines=true,						% sets automatic line breaking
+%	breakatwhitespace=false,				% sets if automatic breaks should only happen at whitespace
+%	title=\lstname,							% show the filename of files included with \lstinputlisting;
+%											% also try caption instead of title
+%	escapeinside={\%*}{*)},					% if you want to add a comment within your code
+%	morekeywords={*,...}					% if you want to add more keywords to the set
+%}
+
+\usepackage{xspace}
+
+\parindent=0pt
+\parskip=2pt
+
+\setlength{\oddsidemargin}{-1cm}
+\setlength{\textwidth}{18cm}
+\setlength{\headsep}{-1cm}
+\setlength{\textheight}{23cm}
+\setlength{\parskip}{1em}
+
+\def\darius{\textsf{Darius}\xspace}
+\def\antlr{\texttt{AnTLR}\xspace}
+\def\pe{\emph{Publicação Eletrónica}\xspace}
+
+\def\titulo#1{\section{#1}}
+\def\super#1{{\em Supervisor: #1}\\ }
+\def\area#1{{\em \'{A}rea: #1}\\[0.2cm]}
+\def\resumo{\underline{Resumo}:\\ }
+
+
+%%%%\input{LPgeneralDefintions}
+
+\title{Processamento de Linguagens (3º ano de Curso)\\ \textbf{Trabalho Prático 3}\\ Relatório de Desenvolvimento}
+\author{José Silva\\ (A74601) \and Pedro Cunha\\ (A73958) \and Gonçalo Moreira\\ (A73591) }
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Documentação do terceiro trabalho prático da unidade curricular de "Processamento de Linguagens", o principal foco incide sobre a criação de um compilador baseado numa gramática tradutora. Inicialmente é idealizada uma linguagem de programação simples, capaz de dar resposta a uma série de requisitos base.
+Demonstrando e documentando a solução proposta pelo grupo de trabalho para o problema em concreto, termina-se o relatório com uma análise argumentativa sobre a eficiência dessa mesma solução.
+
+\end{abstract}
+
+\tableofcontents
+
+
+\chapter{Introdução} \label{intro}
+
+
+O terceiro trabalho prático da unidade curricular de "Processamento de Linguagens" tem como principal objetivo o desenvolvimento de um processador de uma linguagem segundo um método de tradução dirigida pela sintaxe e suportado numa gramática. Para além disso,  pretende-se  desenvolver  um compilador através da geração de código para uma máquina de stack virtual. 
+ 
+ 
+Inicialmente é idealizada uma linguagem de programação simples, capaz de dar resposta a uma série de requisitos base. Posteriormente, é desenvolvido o compilador  capaz de gerar pseudocódigo Assembly na máquina virtual fornecida, com base na GIC desenvolvida e recorrendo às ferramentas Flex e Yacc. 
+ 
+
+
+
+\section*{Estrutura do Relatório} 
+
+No capítulo 1 faz-se uma pequena introdução ao problema e às ferramentas utilizadas para a resolução deste. Para além disso, é descrita de uma forma breve a estrutura do relatório.\par
+No capítulo 2 faz-se uma análise breve mas mais detalhada do problema em questão.\par
+No capítulo 3 é descrito de uma forma sumarizada o procedimento utilizado para solucionar as várias questões propostas pelos enunciados.\par
+No capítulo 4 são apresentados alguns testes e respetivos resultados para comprovar o respectivo funcionamento das soluções apresentadas.\par
+Finalmente, no capítulo 5 termina-se o relatório com uma síntese do que foi dito, as conclusões e o trabalho futuro.
+
+
+\chapter{Análise e Especificação} \label{ae}
+\section{Descrição informal do problema}
+
+O problema proposto pelo enunciado do trabalho prático tem como base uma linguagem de programação, idealizada pelo grupo de trabalho, que deverá permitir declarar e manusear variáveis, atómicas e estruturadas, realizar operações e instruções ( algorítmicas e de controlo de fluxo de execução) básicas, bem como, ler do standard input e output.
+
+Para além disso, são consideradas alguns aspectos comuns deste tipo de linguagens de programação. Após a realização das análises léxicas e sintáticas, acompanhadas pelas respectivas ações a tomar, pretende-se  gerar um ficheiro com instruções Assembly corretamente ordenadas e capazes de produzirem o resultado final pretendido.   
+ 
+ 
+\section{Especificação do Requisitos}
+\subsection{Dados}
+
+Antes da criação da GIC foi especificado, pelo grupo de trabalho, alguns requisitos base que o formato da linguagem imperativa deveria de ter. Assim, foram tomadas as seguintes decisões: 
+\begin{enumerate}
+\item As variáveis devem ser declaradas no inicio do programa. A primeira declaração deve ser sempre antecedida por "VAR:". Qualquer declaração deve ser precedida por ";". É possível declarar variáveis atómicas mas igualmente variáveis estruturadas. No que diz respeito às ultimas, as variáveis estruturadas de dimensão um, devem ser declaradas com o seu tamanho entre parênteses e as de dimensão dois com o número de linhas entre brackets e o número de colunas entre parênteses.
+\item Finalizadas todas as declarações de variáveis, o inicio das várias instruções que compõe o programa deve ser especificado com "START:". Após esta declaração, podem ser especificadas vários  tipos de instruções. 
+\item No que diz respeito às instruções que permitem atribuições a determinadas variáveis, estas devem ter o seguinte formato: variável "->" expressão.  
+\item Relativamente à interação com o standard input e output, deve ser feita utilizando o formato: Pread(x) e Pprint(x), respectivamente, em que x pode ser uma variável atómica ou um array de uma ou duas dimensões. 
+\item Retratando o controlo de fluxo de execução, as instruções condicionais podem ser especificadas através de "if" e "else", sendo o seu significado semelhante ao utilizado em praticamente todas as linguagens de programação imperativas atuais. Após estas palavras chave, deve ser incluído uma bracket de abertura e no final das instruções uma bracket de fecho. Finalmente, para especificar ciclos de execução, podem ser utilizada a palavra "while", onde o processo é semelhante ao descrito anteriormente.  
+\end{enumerate}
+
+\chapter{Concepção/desenho da Resolução} \label{cd}
+
+No decorrer da definição da linguagem imperativa, a qual apelidamos de Plang, foi construída a seguinte GIC: 
+
+//inserir GIC
+
+\section{Estruturas de Dados}
+
+De modo a ser possível desenvolver algumas das funcionalidades base descritas acima, foi necessária a definição de estruturas de dados capazes de as suportar. Dado que, como vai ser descrito na secção a seguir, é necessário guardar informação relativamente às variáveis declaradas, o grupo de trabalho utilizou a HashTable disponibilizada pela biblioteca glib e criou a struct definida a seguir: 
+
+//inserir código da struct
+
+A definição de uma HashTable que, possui o nome da variável como chave e a struct descrita anteriormente como valor, permite testar se existem ou não re-declarações no código da linguagem e permitiu ainda guardar informação útil respeitante às variáveis declaradas (Endereço na stack e o tamanho das colunas, para o caso das variáveis estruturadas). Também é declarado um inteiro com o intuito de  representar um stack pointer.
+
+Através dos algoritmos que vão ser a seguir descritos é possível perceber a utilidade destas estruturas de dados para a implementação das funcionalidades da linguagem. 
+
+//FALAR SOBRE ESTRUTURAS PARA CICLOS E IFS
+
+\section{Algoritmos}
+
+Tendo em conta aquilo que foi descrito nas secções anteriores, podemos descrever de forma resumida como foi resolvido o problema em questão, ou seja, o que deve resultar da tradução da linguagem criada pelo  grupo de trabalho para linguagem assembly.  
+
+Assim, no que diz respeito à declaração de variáveis de variáveis atómicas, primeiro dá-se uma verificação se já tinham sido declaradas e caso isso não se verifique são empilhadas na stack através de PUSHI X, em que x é o 0 por default. O valor do stack pointer é guardado na estrutura da variável e incrementado logo de seguida. No caso das variáveis estruturais, é usado PUSHN x que resulta em empilhar x vezes o valor 0 na stack.  O valor do stack pointer também é guardado, incrementado pelo tamanho, no caso do array, e incrementado pelo produto do número de linhas e colunas, no caso da matriz. 
+
+Depois da declaração inicial das variáveis e do corpo do programa, deve ser gerada a instrução de código Assembly "START" que indica o inicio das instruções. 
+Posteriormente, no que diz respeito à atribuição de valores, no caso de a variável ser atómica, apenas se empilha o valor que se quer atribuir e de seguida faz-se um STOREG x, em que x é o endereço da variável em questão e que se encontra guardado na estrutura de dados descrita na secção anterior.
+
+O processo torna-se mais complexo em relação aos arrays e às matrizes. Em relação aos arrays, o processo inicial passa sempre por empilhar o valor de gp (endereço de base das variáveis globais), o valor correspondente à posição do inicio do array (em relação ao gp) e, finalmente, o valor correspondente a essa posição somada com o gp (PUSHGP, PUSHI X, PADD). O passo seguinte passa por empilhar o valor desejado a atribuir e a posição desejada no array. Finalmente, através de STOREN, é arquivada na posição (inicio array + posição desejada) (trazidas para a stack com as instruções anteriores) o valor também trazido para a stack no passo anterior.  
+ 
+Em relação às matrizes, o processo é, em parte, semelhante, diferindo no facto de que para o acesso a m[i][j] é necessário aplicar a seguinte fórmula: i*(tamanho de cada linha)+j, e havendo assim a necessidade de utilizar alguns operadores, como ADD e MUL. 
+Já no que diz respeito à escrita para o standard output, o processo é bastante simples. Para variáveis atómicas apenas é necessário WRITEI. Para strings, primeiro é necessário empilha-las e de seguida um WRITES. 
+
+Por outro lado, relativamente ao standard input, deve ser gerado um READ para ler a string do STDIN, ATOI para a converter essa string num inteiro e STOREG para a armazenar. No caso especifico de arrays, o processo passa por a fase inicial da atribuição descrita no parágrafo anterior, seguido das instruções relatadas na linha anterior, com a substituição de STOREG por STOREN.
+
+//FALAR DOS CICLOS E CONDICIONAL 
+
+\chapter{Codificação e Testes} \label{ct}
+\section{Alternativas, Decisões e Problemas de Implementação}
+
+No que diz respeito à idealização da linguagem imperativa, foi desenvolvida uma linguagem com características especificas e próprias, mas capazes de dar resposta às funcionalidades propostas pelo enunciado do trabalho. Já numa fase posterior à criação da GIC, podemos realçar o facto de termos utilizado ações não apenas no final de uma produção, mas também no meio desta. Apesar do grupo de trabalho nunca ter realizado algo semelhante nas aulas práticas, isto veio permitir uma maior facilidade na resolução do problema.
+
+Na primeira fase do trabalho prático, um dos principais problemas de implementação passou por definir a ordem pelas quais as operações aritméticas deveriam aparecer na gramática formulada. Foi com o auxilio do código desenvolvido nas aulas práticas da unidade curricular, em particular no exercício onde se pretendia desenvolver uma gramática descritiva do modo de funcionamento de uma calculadora, que o grupo de trabalho consegui garantir que os operadores com maior prioridade iriam ser executados em primeiro lugar.
+
+//FALAR PARA CICLOS E IF'S
+
+\section{Testes realizados e Resultados}
+
+
+
+
+\chapter{Conclusão} \label{concl}
+
+ 
+Neste projeto foi possível atingir os objetivos propostos, relativos à criação de um compilador baseado numa gramática tradutora. Para além disso, foi possível conciliar os conceitos relativos a gramáticas independentes do contexto, capazes de usar BNF-puro e satisfazer a condição LR(). 
+
+A principal dificuldade passou construir uma gramática suficientemente e completa, sem quaisquer ambiguidades e incapaz de criar conflitos. Apesar disso, na nossa opinião, a gramática criada encontra-se bastante razoável e capaz de caracterizar de um modo completo a linguagem desenvolvida.
+
+De um modo geral, fazemos uma avaliação positiva do trabalho. Todos os requisitos base expressos no enunciado foram satisfeitos e algumas funcionalidades extra adicionadas. Em relação às funcionalidades extra, no presente trabalho foram realizadas em menor número, em comparação com os trabalhos anteriores, muito devido ao fator tempo. 
+
+\appendix
+\chapter{Código do Programa}
+
+Lista-se a seguir o código  do programa  que foi desenvolvido.
+
+
+\bibliographystyle{alpha}
+\bibliography{relprojLayout}
+
+
+
+\end{document} 
