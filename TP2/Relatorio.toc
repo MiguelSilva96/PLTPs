@@ -1,0 +1,14 @@
+\select@language {portuges}
+\contentsline {chapter}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{2}
+\contentsline {chapter}{\numberline {2}An\IeC {\'a}lise e Especifica\IeC {\c c}\IeC {\~a}o}{3}
+\contentsline {section}{\numberline {2.1}Descri\IeC {\c c}\IeC {\~a}o informal do problema}{3}
+\contentsline {section}{\numberline {2.2}Especifica\IeC {\c c}\IeC {\~a}o do Requisitos}{3}
+\contentsline {subsection}{\numberline {2.2.1}Dados}{3}
+\contentsline {chapter}{\numberline {3}Concep\IeC {\c c}\IeC {\~a}o/desenho da Resolu\IeC {\c c}\IeC {\~a}o}{5}
+\contentsline {section}{\numberline {3.1}Estruturas de Dados}{6}
+\contentsline {section}{\numberline {3.2}Algoritmos}{7}
+\contentsline {chapter}{\numberline {4}Codifica\IeC {\c c}\IeC {\~a}o e Testes}{9}
+\contentsline {section}{\numberline {4.1}Alternativas, Decis\IeC {\~o}es e Problemas de Implementa\IeC {\c c}\IeC {\~a}o}{9}
+\contentsline {section}{\numberline {4.2}Testes realizados e Resultados}{9}
+\contentsline {chapter}{\numberline {5}Conclus\IeC {\~a}o}{20}
+\contentsline {chapter}{\numberline {A}C\IeC {\'o}digo do Programa}{21}

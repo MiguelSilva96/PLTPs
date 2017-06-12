@@ -91,7 +91,7 @@
 
 %%%%\input{LPgeneralDefintions}
 
-\title{Processamento de Linguagens (3º ano de Curso)\\ \textbf{Trabalho Prático 3}\\ Relatório de Desenvolvimento}
+\title{\textbf{Compilador para VM usando Yacc e Flex} \\ Processamento de Linguagens (3º ano de Curso)\\ \textbf{Trabalho Prático 2}\\ Relatório de Desenvolvimento}
 \author{José Silva\\ (A74601) \and Pedro Cunha\\ (A73958) \and Gonçalo Moreira\\ (A73591) }
 \date{\today}
 
@@ -152,19 +152,39 @@ Antes da criação da GIC foi especificado, pelo grupo de trabalho, alguns requi
 
 No decorrer da definição da linguagem imperativa, a qual apelidamos de Plang, foi construída a seguinte GIC: 
 
-//inserir GIC
+\lstinputlisting{gramatica.txt}
 
 \section{Estruturas de Dados}
 
 De modo a ser possível desenvolver algumas das funcionalidades base descritas acima, foi necessária a definição de estruturas de dados capazes de as suportar. Dado que, como vai ser descrito na secção a seguir, é necessário guardar informação relativamente às variáveis declaradas, o grupo de trabalho utilizou a HashTable disponibilizada pela biblioteca glib e criou a struct definida a seguir: 
 
-//inserir código da struct
+\begin{lstlisting}
+typedef struct variable {
+    int stack;
+    int size;
+} *Var;
+\end{lstlisting}
 
 A definição de uma HashTable que, possui o nome da variável como chave e a struct descrita anteriormente como valor, permite testar se existem ou não re-declarações no código da linguagem e permitiu ainda guardar informação útil respeitante às variáveis declaradas (Endereço na stack e o tamanho das colunas, para o caso das variáveis estruturadas). Também é declarado um inteiro com o intuito de  representar um stack pointer.
 
 Através dos algoritmos que vão ser a seguir descritos é possível perceber a utilidade destas estruturas de dados para a implementação das funcionalidades da linguagem. 
 
-//FALAR SOBRE ESTRUTURAS PARA CICLOS E IFS
+Para controlar os ifs, elses e whiles da linguagem foi utilizada uma stack. Desta forma, tratou-se estes casos como LIFO garantindo 
+uma execução correta em ifs, elses e whiles encadeados ou aninhados. A stack tem sempre no topo o ultimo jump utilizado, sabendo assim
+qual o bloco a definir. Definição da stack:
+
+\begin{lstlisting}
+#define MAXSTACK 512
+
+typedef struct stack {
+    int blocks[MAXSTACK];
+    int top;
+} *Stack;
+
+int pop(Stack);
+void push(int, Stack);
+\end{lstlisting}
+
 
 \section{Algoritmos}
 
@@ -182,7 +202,19 @@ Já no que diz respeito à escrita para o standard output, o processo é bastant
 
 Por outro lado, relativamente ao standard input, deve ser gerado um READ para ler a string do STDIN, ATOI para a converter essa string num inteiro e STOREG para a armazenar. No caso especifico de arrays, o processo passa por a fase inicial da atribuição descrita no parágrafo anterior, seguido das instruções relatadas na linha anterior, com a substituição de STOREG por STOREN.
 
-//FALAR DOS CICLOS E CONDICIONAL 
+Para os blocos definidos para ifs, elses e whiles existe uma variavel global(inteiro) que garante que nao existem blocos com o mesmo 
+nome, porque incrementa sempre que se cria algum e esse número é usado nos nomes dos blocos. 
+No caso particular dos ifs com ou sem else existe uma stack para eles, no início de um if são colocadas as condições, por exemplo
+EQUAL. De seguida, é efetuado um JZ blocox, e o valor de x é colocado na stack e o pop do mesmo só é efetuado no final do if, que é 
+onde começa o else ou então o resto do código caso não exista else. Assim, quando se faz pop, coloca-se o valor de return do pop no 
+nome do bloco que define o código deste ponto para a frente. No caso de haver um else, existe ainda mais um cuidado a ter. É necessário
+definir um JUMP blocoy, em que blocoy representa o final do else. Este JUMP é definido antes do bloco do else, estando assim dentro do if e é executado se o if for executado. Este JUMP também utiliza a stack dos ifs, sendo que é feito push depois do JUMP e pop da stack no 
+final do else, começando aí o bloco referenciado pelo JUMP. Assim, o else não é executado quando o if é.
+Quanto ao caso dos whiles é tambem utilizada uma stack, que segue a mesma lógica. Depois da condição do while é usada a stack dos ifs 
+com o JZ blocox e push x na stack. No final é feito pop dessa mesma stack utilizando o valor de retorno do pop, que corresponde ao bloco 
+referenciado em JZ. Mas isto não é suficiente para o ciclo. Por isso, existe uma stack para os whiles que define um bloco no início do while 
+mesmo antes de verificar a condição, fazendo push para a stack dos whiles do valor usado nesse bloco. Desta forma, no final do while,
+ pode fazer-se pop dessa mesma stack, retira-se o valor do bloco de inicio do while e efetua-se JUMP para o mesmo e assim a condição será verificada novamente até falhar.
 
 \chapter{Codificação e Testes} \label{ct}
 \section{Alternativas, Decisões e Problemas de Implementação}
@@ -191,12 +223,49 @@ No que diz respeito à idealização da linguagem imperativa, foi desenvolvida u
 
 Na primeira fase do trabalho prático, um dos principais problemas de implementação passou por definir a ordem pelas quais as operações aritméticas deveriam aparecer na gramática formulada. Foi com o auxilio do código desenvolvido nas aulas práticas da unidade curricular, em particular no exercício onde se pretendia desenvolver uma gramática descritiva do modo de funcionamento de uma calculadora, que o grupo de trabalho consegui garantir que os operadores com maior prioridade iriam ser executados em primeiro lugar.
 
-//FALAR PARA CICLOS E IF'S
+Surgiu o típico problema "dangling else", pois inicialmente as opções de if sozinho ou com else causavam conflito na gramática.
+Existia um conflito reduce/reduce, que foi resolvido acrescentando uma nova produção designada Opelse.
+Houve também um problema na definição de matrizes e arrays, havia conflito com a forma de representação. Então para representar as 
+linhas da matriz foram usadas chavetas, e para as colunas os parênteses retos como no array.
 
 \section{Testes realizados e Resultados}
 
+Programa que le e armazena N inteiros num array, ordena e imprime de por ordem decrescente
+\lstinputlisting{Programas/ordena.plang}
+
+Assembly gerado:
+\lstinputlisting{Assembly/ordena.vm}
 
 
+Programa que lê N inteiros e imprime o menor
+\lstinputlisting{Programas/menorNum.plang}
+
+Assembly gerado:
+\lstinputlisting{Assembly/menorNum.vm}
+
+Programa que calcula o produtório de 10 números
+\lstinputlisting{Programas/produtorio.plang}
+
+Assembly gerado:
+\lstinputlisting{Assembly/produtorio.vm}
+
+Programa que recebe 4 inteiros e diz se sao lados de um quadrado
+\lstinputlisting{Programas/quadrado.plang}
+
+Assembly gerado:
+\lstinputlisting{Assembly/quadrado.vm}
+
+Programa que le e armazena N inteiros num array e imprime em ordem inversa
+\lstinputlisting{Programas/inversa.plang}
+
+Assembly gerado:
+\lstinputlisting{Assembly/inversa.vm}
+
+Programa - Contar e imprimir os numeros impares de uma sequencia de numeros naturais(pára no 0)
+\lstinputlisting{Programas/impares.plang}
+
+Assembly gerado:
+\lstinputlisting{Assembly/impares.vm}
 
 \chapter{Conclusão} \label{concl}
 
@@ -211,6 +280,9 @@ De um modo geral, fazemos uma avaliação positiva do trabalho. Todos os requisi
 \chapter{Código do Programa}
 
 Lista-se a seguir o código  do programa  que foi desenvolvido.
+
+\lstinputlisting{plang.flex}%input de um ficheiro
+\lstinputlisting{plang.y}
 
 
 \bibliographystyle{alpha}

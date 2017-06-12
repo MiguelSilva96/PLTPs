@@ -1,0 +1,75 @@
+G = <T,N,S,P>
+T = {VAR,':',';','[',']','{', '}', START, '-', '>', '(', ')', V, 
+PREAD, PPRINT, STRING, IF, ELSE, WHILE, '|', '&', '=', '!', '<', '+', 
+'-', '*', '/', '%', '^', INTGR }
+N = {Plang,Init,Body,Declare,Variable,Body,Instruction, Instructions, 
+Assignment, Read, Print, Condicional, Opelse, Cyclic, Accumulator, Comparator,
+Expression, P, Fat, Es}
+S = {Plang}
+
+p0: Plang				->	Init Body
+p1: Init				-> 	VAR ':' Declare 
+p2: Declare				-> 	Declare Variable
+p3: Variable			-> 	V ';'
+p4:						|  V '[' INTGR ']' ';'
+p5:						|  V '{' INTGR '}' '[' INTGR ']' ';'
+
+p6:	Body				->  START ':' Instructions ';'
+P7:	Instructions		-> 	Instructions Instruction
+p8:						| 	Instruction
+
+p9: Instruction			->	Assignment
+p10:					|  Read
+p11:					|  Print
+p12:					|  Condicional
+p13:					|  Cyclic
+
+p14: Assignment			->  V '-' '>' Expression ';'
+p15:					| 	V '[' Expression ']' '-' '>' Expression ';'
+p16:					|   V '{' Expression '}' '[' Expression ']' '-' '>' Expression ';'
+
+p17: Read				->  PREAD '(' V ')' ';'
+p18:					|  PREAD '(' V  { '[' Expression ']' ')' ';'
+p19:					|  PREAD '(' V '{' { Expression '}' '[' Expression ']' ')' ';'
+
+p20: Print				->  PPRINT '(' Expression ')' ';'
+p21:					|  PPRINT '(' STRING ')' ';'
+
+p22: Condicional		->  IF '(' Accumulator ')' '{' Instructions '}' Opelse
+p23: Opelse				->  ELSE '{' Instructions '}'
+p24:					|
+
+p25: Cyclic				-> WHILE '(' Accumulator ')' '{' Instructions '}'
+p26: Accumulator		-> Comparator '|' '|' Accumulator
+p27:					| Comparator '&' '&' Accumulator
+p28:					| Comparator
+
+p29: Comparator			-> Expression
+p30:					| Expression '=' '=' Expression
+p31:					| Expression '!' '=' Expression
+p32:					| Expression '>' Expression
+p33:					| Expression '<' Expression
+p34:					| Expression '>' '=' Expression
+p35:					| Expression '<' '=' Expression
+
+p36: Expression			-> Expression '+' P
+p37:					| Expression '-' P
+p38:					| P
+
+p39: P 					-> P '*' Fat
+p40:					| P '/' Fat
+p41:					| P '%' Fat
+p42:					| Fat
+
+p43: Fat				-> Es '^' Fat
+p44:					| Es
+
+p45: Es					-> '(' Expression ')'
+p46:					| INTGR
+p47:					| '-' INTGR
+p48:					| V
+p49:					| '-' V
+p50:					| V  '[' Expression ']'
+p51:					| '-' V '[' Expression ']'
+p52:					| V '{' Expression '}' '[' Expression ']'
+p53:					| '-' V '{' Expression '}' '['Expression ']'
