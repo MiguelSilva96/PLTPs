@@ -29,7 +29,6 @@
 	Stack whiles;
 	FILE *fp;
 	int sp = 0;
-	int pc = 0;
 	int blocos = 0;
 
 
@@ -44,7 +43,7 @@
 %type<s> V STRING
 
 %%
-Plang		: Init Body { fprintf(fp, "end\n"); }
+Plang		: Init Body { fprintf(fp, "stop\n"); }
 			;
 
 Init		: VAR ':' Declare { fprintf(fp, "start\n"); }
@@ -70,7 +69,6 @@ Variable	: V ';' {
 					g_hash_table_insert(variaveis,$1,v);
 					fprintf(fp, "		pushi 0\n");
 					sp++;
-					pc++;
 				}
 			}
 			|  V '[' INTGR ']' ';'  {
@@ -120,7 +118,6 @@ Assignment	: V '-' '>' Expression ';' {
 				}
 				else {
 					fprintf(fp, "		storeg %d\n", temp->stack);
-					pc++;
 				}
 			}
 			| V  {
@@ -165,7 +162,6 @@ Read		: PREAD '(' V ')' ';' {
 					fprintf(fp, "		read\n");
 					fprintf(fp, "		atoi\n");
 					fprintf(fp, "		storeg %d\n", temp->stack);
-					pc += 3;
 				}
 			}
 			| PREAD '(' V  {
@@ -197,6 +193,7 @@ Read		: PREAD '(' V ')' ';' {
 				fprintf(fp, "		pushi %d\n", temp->size);
 				fprintf(fp, "		mul\n");
 			} Expression ']' ')' ';' {
+				fprintf(fp, "		add\n");
 				fprintf(fp, "		read\n");
 				fprintf(fp, "		atoi\n");
 				fprintf(fp, "		storen\n");
@@ -206,12 +203,10 @@ Read		: PREAD '(' V ')' ';' {
 
 Print		: PPRINT '(' Expression ')' ';' {
 				fprintf(fp, "		writei\n");
-				pc++;
 			}
 			| PPRINT '(' STRING ')' ';' {
 				fprintf(fp, "		pushs %s\n", $3);
 				fprintf(fp, "		writes\n");
-				pc +=2;
 			}
 			;
 
@@ -222,9 +217,14 @@ Condicional	: IF '(' Accumulator ')' {
 			} '{' Instructions '}' Opelse
 			;
 
-Opelse		: ELSE { 
+Opelse		: ELSE {
+				blocos++;
+				fprintf(fp, "		jump bloco%d\n", blocos); 
 				fprintf(fp, "bloco%d:\n", pop(ifs));
-			} '{' Instructions '}'
+				push(blocos, ifs);
+			} '{' Instructions '}' {
+				fprintf(fp, "bloco%d:\n", pop(ifs));
+			}
 			| { 
 				fprintf(fp, "bloco%d:\n", pop(ifs));
 			}
@@ -252,45 +252,42 @@ Accumulator	: Comparator '|' '|' Accumulator
 Comparator	: Expression
 			| Expression '=' '=' Expression {
 				fprintf(fp, "		equal\n");
-				pc++;
 			}
-			| Expression '!' '=' Expression
+			| Expression '!' '=' Expression {
+				fprintf(fp, "		equal\n");
+				fprintf(fp, "		not\n");
+			}
 			| Expression '>' Expression {
 				fprintf(fp, "		sup\n");
-				pc++;
 			}
 			| Expression '<' Expression {
 				fprintf(fp, "		inf\n");
-				pc++;
 			}
 			| Expression '>' '=' Expression {
 				fprintf(fp, "		supeq\n");
-				pc++;
 			}
 			| Expression '<' '=' Expression {
 				fprintf(fp, "		infeq\n");
-				pc++;
 			}
 			;
 
 Expression	: Expression '+' P {
 				fprintf(fp, "		add\n");
-				pc++;
 			}
 			| Expression '-' P {
 				fprintf(fp, "		sub\n");
-				pc++;
 			}
 			| P
 			;
 
 P			: P '*' Fat {
 				fprintf(fp, "		mul\n");
-				pc++;
 			}
 			| P '/' Fat {
 				fprintf(fp, "		div\n");
-				pc++;
+			}
+			| P '%' Fat {
+				fprintf(fp, "		mod\n");
 			}
 			| Fat
 			;
@@ -303,6 +300,9 @@ Es			: '(' Expression ')'
 			| INTGR {
 				fprintf(fp, "		pushi %d\n", $1);
 			}
+			| '-' INTGR {
+				fprintf(fp, "		pushi -%d\n", $2);
+			}
 			| V {
 				temp = g_hash_table_lookup(variaveis,$1);
 				if(!temp) {
@@ -310,6 +310,17 @@ Es			: '(' Expression ')'
 				}
 				else {
 					fprintf(fp, "		pushg %d\n", temp->stack);
+				}
+			}
+			| '-' V {
+				temp = g_hash_table_lookup(variaveis,$2);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushi -1\n");
+					fprintf(fp, "		pushg %d\n", temp->stack);
+					fprintf(fp, "		mul\n");
 				}
 			}
 			| V  {
@@ -324,6 +335,21 @@ Es			: '(' Expression ')'
 				}
 			} '[' Expression ']' {
 				fprintf(fp, "		loadn\n");
+			}
+			| '-' V  {
+				temp = g_hash_table_lookup(variaveis,$2);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} '[' Expression ']' {
+				fprintf(fp, "		loadn\n");
+				fprintf(fp, "		pushi -1\n");
+				fprintf(fp, "		mul\n");
 			}
 			| V '{'  {
 				temp = g_hash_table_lookup(variaveis,$1);
@@ -340,7 +366,26 @@ Es			: '(' Expression ')'
 				fprintf(fp, "		mul\n");
 			} Expression ']' {
 				fprintf(fp, "		add\n");
-				fprintf(fp, "		load\n");
+				fprintf(fp, "		loadn\n");
+			}
+			| '-' V '{'  {
+				temp = g_hash_table_lookup(variaveis,$2);
+				if(!temp) {
+					yyerror("A variável não foi anteriormente declarada!");
+				}
+				else {
+					fprintf(fp, "		pushgp\n");
+					fprintf(fp, "		pushi %d\n", temp->stack);
+					fprintf(fp, "		padd\n");
+				}
+			} Expression '}' '[' {
+				fprintf(fp, "		pushi %d\n", temp->size);
+				fprintf(fp, "		mul\n");
+			} Expression ']' {
+				fprintf(fp, "		add\n");
+				fprintf(fp, "		loadn\n");
+				fprintf(fp, "		pushi -1\n");
+				fprintf(fp, "		mul\n");
 			}
 			;
 %%

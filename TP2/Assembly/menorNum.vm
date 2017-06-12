@@ -50,7 +50,9 @@ bloco3:
 		writei
 		pushs " \n"
 		writes
+		jump bloco5
 bloco1:
 		pushs "Não inseriu nenhum número :(\n"
 		writes
-end
+bloco5:
+stop

@@ -1,0 +1,35 @@
+		pushi 0
+		pushi 0
+		pushi 0
+start
+		pushi 10
+		storeg 0
+		pushi 1
+		storeg 1
+		pushs "Insira 10 números \n"
+		writes
+bloco1:
+		pushg 0
+		pushi 0
+		sup
+		jz bloco2
+		read
+		atoi
+		storeg 2
+		pushg 1
+		pushg 2
+		mul
+		storeg 1
+		pushg 0
+		pushi 1
+		sub
+		storeg 0
+		jump bloco1
+bloco2:
+		pushs "Produtório: "
+		writes
+		pushg 1
+		writei
+		pushs " \n"
+		writes
+stop

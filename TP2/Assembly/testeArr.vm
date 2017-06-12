@@ -1,0 +1,57 @@
+		pushn 3
+		pushn 9
+		pushi 0
+start
+		pushi -10
+		storeg 12
+		pushgp
+		pushi 0
+		padd
+		pushi 0
+		pushi 3
+		storen
+		pushgp
+		pushi 0
+		padd
+		pushi 0
+		loadn
+		writei
+		pushs " \n"
+		writes
+		pushg 12
+		writei
+		pushi -1
+		pushi 2
+		pushi 1
+		add
+		mul
+		storeg 12
+		pushi -1
+		pushg 12
+		mul
+		storeg 12
+		pushgp
+		pushi 3
+		padd
+		pushi 0
+		pushi 3
+		mul
+		pushi 0
+		add
+		pushi 1
+		storen
+		pushgp
+		pushi 3
+		padd
+		pushi 0
+		pushi 3
+		mul
+		pushi 0
+		add
+		loadn
+		pushi -1
+		mul
+		storeg 12
+		pushg 12
+		writei
+stop

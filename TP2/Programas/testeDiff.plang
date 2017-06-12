@@ -1,0 +1,23 @@
+# //Programa// - //contar e imprimir os numeros impares de uma sequencia de numeros naturais(pára no 0)//
+VAR:
+	lido;
+	quantos;
+START:
+	quantos -> 0;
+
+	Pprint("Insira numeros naturais(0 para terminar)\n");
+	Pread(lido);
+
+	while(lido > 0) {
+		if(lido % 2 != 0) {
+			quantos -> quantos + 1;
+			Pprint("Ímpar: ");
+			Pprint(lido);
+			Pprint(" \n");
+		}
+		Pread(lido);
+	}
+	Pprint("Foram lidos: ");
+	Pprint(quantos);
+	Pprint(" impares.\n");
+;

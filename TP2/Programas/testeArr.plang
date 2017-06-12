@@ -1,0 +1,16 @@
+VAR:
+	y[3];
+	matriz{3}[3];
+	x;
+START:
+	x->-10;
+	y[0]->3;
+	Pprint(y[0]);
+	Pprint(" \n");
+	Pprint(x);
+	x->-1*(2+1);
+	x->-x;
+	matriz{0}[0] -> 1;
+	x->-matriz{0}[0];
+	Pprint(x);
+;

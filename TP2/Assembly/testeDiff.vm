@@ -1,0 +1,45 @@
+		pushi 0
+		pushi 0
+start
+		pushi 0
+		storeg 1
+		pushs "Insira numeros naturais(0 para terminar)\n"
+		writes
+		read
+		atoi
+		storeg 0
+bloco1:
+		pushg 0
+		pushi 0
+		sup
+		jz bloco2
+		pushg 0
+		pushi 2
+		mod
+		pushi 0
+		equal
+		not
+		jz bloco3
+		pushg 1
+		pushi 1
+		add
+		storeg 1
+		pushs "Ímpar: "
+		writes
+		pushg 0
+		writei
+		pushs " \n"
+		writes
+bloco3:
+		read
+		atoi
+		storeg 0
+		jump bloco1
+bloco2:
+		pushs "Foram lidos: "
+		writes
+		pushg 1
+		writei
+		pushs " impares.\n"
+		writes
+stop

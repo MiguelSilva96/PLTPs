@@ -1,0 +1,18 @@
+# Programa que calcula o produtório de 10 números
+VAR:
+	total;
+	produtorio;
+	aux;
+START:
+	total -> 10;
+	produtorio -> 1;
+	Pprint("Insira 10 números \n");
+	while(total > 0) {
+		Pread(aux);
+		produtorio -> produtorio * aux;
+		total -> total - 1;
+	}
+	Pprint("Produtório: ");
+	Pprint(produtorio);
+	Pprint(" \n");
+;

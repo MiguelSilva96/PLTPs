@@ -1,5 +1,6 @@
 		pushn 10
 		pushn 10
+		pushi 0
 start
 		pushs "Insira numero para posiçao 0: "
 		writes
@@ -31,6 +32,7 @@ start
 		pushi 5
 		mul
 		pushi 2
+		add
 		read
 		atoi
 		storen
@@ -46,8 +48,8 @@ start
 		mul
 		pushi 2
 		add
-		load
+		loadn
 		writei
 		pushs " \n"
 		writes
-end
+stop

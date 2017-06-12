@@ -1,0 +1,38 @@
+# Programa que le e armazena N inteiros num array, ordena e imprime de por ordem decrescente
+VAR:
+	numeros[64];
+	quantos;
+	aux;
+	i; j;
+START:
+	Pprint("Quantos inteiros a ordenar?(Max:64)\n");
+	Pread(quantos);
+	
+	i -> 0;
+	while(i < quantos) {
+		Pread(numeros[i]);
+		i -> i + 1;
+	}
+
+	i -> 0;
+	while(i < quantos){
+		j -> i + 1;
+		while(j < quantos){
+			if(numeros[i] > numeros[j]) {
+				aux -> numeros[i];
+				numeros[i] -> numeros[j];
+				numeros[j] -> aux;
+			}
+			j -> j + 1;
+		}
+		i -> i + 1;
+	}
+
+	Pprint("Array em ordem decrescente: \n");
+	
+	while(quantos > 0) {
+		quantos -> quantos - 1;
+		Pprint(numeros[quantos]);
+		Pprint(" \n");
+	}
+;

@@ -6,7 +6,7 @@
 							yylval.d = atoi(yytext);
 							return INTGR;
 							}
-[\^+\-*/\[\]=><;,():{}\|&!]		{
+[\^+\-*/\[\]=><;,()%:{}\|&!]		{
 							return yytext[0];
 							}
 VAR                         {
@@ -38,6 +38,7 @@ while                       {
 							yylval.s = strdup(yytext);
 							return STRING;
 							}
+#.+\n                          { }
 [ \t\n]                     { }
 
 .|\n 						{ yyerror("Caracter desconhecido"); }

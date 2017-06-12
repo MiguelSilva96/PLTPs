@@ -1,0 +1,116 @@
+		pushn 64
+		pushi 0
+		pushi 0
+		pushi 0
+		pushi 0
+start
+		pushs "Quantos inteiros?(Max:64)\n"
+		writes
+		read
+		atoi
+		storeg 64
+		pushi 0
+		storeg 66
+bloco1:
+		pushg 66
+		pushg 64
+		inf
+		jz bloco2
+		pushgp
+		pushi 0
+		padd
+		pushg 66
+		read
+		atoi
+		storen
+		pushg 66
+		pushi 1
+		add
+		storeg 66
+		jump bloco1
+bloco2:
+		pushi 0
+		storeg 66
+bloco3:
+		pushg 66
+		pushg 64
+		inf
+		jz bloco4
+		pushg 66
+		pushi 1
+		add
+		storeg 67
+bloco5:
+		pushg 67
+		pushg 64
+		inf
+		jz bloco6
+		pushgp
+		pushi 0
+		padd
+		pushg 66
+		loadn
+		pushgp
+		pushi 0
+		padd
+		pushg 67
+		loadn
+		sup
+		jz bloco7
+		pushgp
+		pushi 0
+		padd
+		pushg 66
+		loadn
+		storeg 65
+		pushgp
+		pushi 0
+		padd
+		pushg 66
+		pushgp
+		pushi 0
+		padd
+		pushg 67
+		loadn
+		storen
+		pushgp
+		pushi 0
+		padd
+		pushg 67
+		pushg 65
+		storen
+bloco7:
+		pushg 67
+		pushi 1
+		add
+		storeg 67
+		jump bloco5
+bloco6:
+		pushg 66
+		pushi 1
+		add
+		storeg 66
+		jump bloco3
+bloco4:
+		pushs "Array em ordem decrescente: \n"
+		writes
+bloco8:
+		pushg 64
+		pushi 0
+		sup
+		jz bloco9
+		pushg 64
+		pushi 1
+		sub
+		storeg 64
+		pushgp
+		pushi 0
+		padd
+		pushg 64
+		loadn
+		writei
+		pushs " \n"
+		writes
+		jump bloco8
+bloco9:
+stop

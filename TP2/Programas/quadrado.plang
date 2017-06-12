@@ -1,0 +1,31 @@
+# Programa que recebe 4 inteiros e diz se sao lados de um quadrado
+VAR:
+	numeros;
+	ultimo;
+	lado;
+	verdade;
+	atual;
+START:
+	Pprint("Insira 4 números referentes a lados de um quadrado: \n");
+	numeros -> 4;
+	Pread(atual);
+	lado -> atual;
+	verdade -> 1;
+	numeros -> numeros - 1;
+	while(numeros > 0) {
+		Pread(atual);
+		if(atual == lado) {
+			numeros -> numeros - 1;
+		}
+		else {
+			verdade -> 0;
+			numeros -> numeros - 1;
+		}
+	}
+	if(verdade == 1) {
+		Pprint("É um quadrado! \n");
+	}
+	else {
+		Pprint("Não é um quadrado! \n");
+	}
+;
