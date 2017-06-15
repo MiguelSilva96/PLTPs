@@ -12,7 +12,7 @@ p1: Init				-> 	VAR ':' Declare
 p2: Declare				-> 	Declare Variable
 p3: Variable			-> 	V ';'
 p4:						|  V '[' INTGR ']' ';'
-p5:						|  V '{' INTGR '}' '[' INTGR ']' ';'
+p5:						|  V '{' INTGR '}' '[' INTGR ']' ';'  
 
 p6:	Body				->  START ':' Instructions ';'
 P7:	Instructions		-> 	Instructions Instruction
